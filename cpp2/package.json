@@ -1,11 +1,11 @@
 {
-    "name": "cpp2",
+    "name": "cpp2-syntax",
     "publisher": "elazarcoh",
     "repository": {
         "type": "git",
         "url": "https://github.com/elazarcoh/cpp2-syntax"
     },
-    "displayName": "cpp2",
+    "displayName": "cpp2 Syntax Highlighting",
     "description": "",
     "version": "0.0.1",
     "engines": {
