@@ -20,5 +20,11 @@
 				"isAsync": true,
 			}
 		],
+	},
+	"extensions": {
+		"recommendations": [
+			"appulate.filewatcher",
+			"pedro-w.tmlanguage"
+		]
 	}
 }
