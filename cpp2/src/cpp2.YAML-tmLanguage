@@ -4,6 +4,7 @@ name: cpp2
 
 variables:
   identifier: '[_[:alpha:]][_[:alnum:]]*'
+  namespaced_identifier: '((?:{{identifier}}::)*)({{identifier}})'
   colon: ':[^:]'
   coloncolon: '::'
 
@@ -33,8 +34,8 @@ repository:
     - include: '#function-call'
     - include: '#variable-definition'
     - include: '#variable-assignment' 
-    - include: '#namespaced-variable'
-    - include: '#variable-name'
+    # - include: '#variable-name'
+    # - include: '#binary-operator'
 
   return-statement:
     name: meta.return-statement.cpp2
@@ -45,22 +46,6 @@ repository:
     patterns:
     - include: '#expression'
 
-  variable-name:
-    name: variable.name.cpp2
-    match: '{{identifier}}'
-  
-  namespaced-variable:
-    patterns:
-    - match: ({{identifier}})\s*(::)
-      captures:
-        '1': { name: entity.name.namespace.cpp2 }
-        '2': { name: punctuation.static-accessor.cpp2 }
-    - match: (::)\s*({{identifier}})
-      captures:
-        '1': { name: punctuation.static-accessor.cpp2 }
-        '2': { name: entity.name.variable.cpp2 }
-    - include: '#variable-name'
-
   statement:
     name: meta.statement.cpp2
     patterns:
@@ -68,15 +53,28 @@ repository:
     - include: '#return-statement'
     - include: '#expression'
 
+  namespace-access:
+    patterns:
+    - begin: (?:({{identifier}})(::))
+      beginCaptures:
+        "1": { name: entity.name.namespace.cpp2 }
+        "2": { name: punctuation.static-accessor.cpp2 }
+      end: (?={{identifier}}[^\w:])
+      patterns:
+      - include: '#namespace-access'     
+
   variable-definition:
     name: meta.definition.variable.cpp2
     begin: |
       (?x)
-      ({{identifier}})\s*
+      {{namespaced_identifier}}\s*
       ({{colon}})\s*
     beginCaptures:
-      "1": { name: entity.name.variable.cpp2 }
-      "2": { name: punctuation.separator.colon.cpp2 }
+      "1": 
+        patterns: 
+        - include: '#namespace-access'
+      "2": { name: entity.name.variable.cpp2 }
+      "3": { name: punctuation.separator.colon.cpp2 }
     end: (?<=;)
     patterns:
     - include: '#typing'
@@ -155,22 +153,16 @@ repository:
     - include: '#comment'
     - include: '#statement'
 
-  binary-operator:
-    name: keyword.operator.binary.cpp2
-    # arithmetic
-    match: '+|-|\*|/|%'
-    # bitwise
-    match: '&|\||\^|~|<<|>>'
-    # comparison
-    match: '==|!=|<|>|<=|>='
-    # logical
-    match: '&&|\|\|'
-
-  binary-operation:
-    patterns:
-    - include: '#expression'
-    - include: '#binary-operator'
-    - include: '#expression'
+  # binary-operator:
+  #   name: keyword.operator.binary.cpp2
+  #   # arithmetic
+  #   match: '+|-|\*|/|%'
+  #   # bitwise
+  #   match: '&|\||\^|~|<<|>>'
+  #   # comparison
+  #   match: '==|!=|<|>|<=|>='
+  #   # logical
+  #   match: '&&|\|\|'
 
   # variable-definition:
   #   name: meta.variable-definition.cpp2

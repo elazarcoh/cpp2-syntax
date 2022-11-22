@@ -71,14 +71,6 @@
             <key>include</key>
             <string>#variable-assignment</string>
           </dict>
-          <dict>
-            <key>include</key>
-            <string>#namespaced-variable</string>
-          </dict>
-          <dict>
-            <key>include</key>
-            <string>#variable-name</string>
-          </dict>
         </array>
       </dict>
       <key>return-statement</key>
@@ -105,57 +97,6 @@
           </dict>
         </array>
       </dict>
-      <key>variable-name</key>
-      <dict>
-        <key>name</key>
-        <string>variable.name.cpp2</string>
-        <key>match</key>
-        <string>[_[:alpha:]][_[:alnum:]]*</string>
-      </dict>
-      <key>namespaced-variable</key>
-      <dict>
-        <key>patterns</key>
-        <array>
-          <dict>
-            <key>match</key>
-            <string>([_[:alpha:]][_[:alnum:]]*)\s*(::)</string>
-            <key>captures</key>
-            <dict>
-              <key>1</key>
-              <dict>
-                <key>name</key>
-                <string>entity.name.namespace.cpp2</string>
-              </dict>
-              <key>2</key>
-              <dict>
-                <key>name</key>
-                <string>punctuation.static-accessor.cpp2</string>
-              </dict>
-            </dict>
-          </dict>
-          <dict>
-            <key>match</key>
-            <string>(::)\s*([_[:alpha:]][_[:alnum:]]*)</string>
-            <key>captures</key>
-            <dict>
-              <key>1</key>
-              <dict>
-                <key>name</key>
-                <string>punctuation.static-accessor.cpp2</string>
-              </dict>
-              <key>2</key>
-              <dict>
-                <key>name</key>
-                <string>entity.name.variable.cpp2</string>
-              </dict>
-            </dict>
-          </dict>
-          <dict>
-            <key>include</key>
-            <string>#variable-name</string>
-          </dict>
-        </array>
-      </dict>
       <key>statement</key>
       <dict>
         <key>name</key>
@@ -176,23 +117,65 @@
           </dict>
         </array>
       </dict>
+      <key>namespace-access</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>begin</key>
+            <string>(?:([_[:alpha:]][_[:alnum:]]*)(::))</string>
+            <key>beginCaptures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.namespace.cpp2</string>
+              </dict>
+              <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>punctuation.static-accessor.cpp2</string>
+              </dict>
+            </dict>
+            <key>end</key>
+            <string>(?=[_[:alpha:]][_[:alnum:]]*[^\w:])</string>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#namespace-access</string>
+              </dict>
+            </array>
+          </dict>
+        </array>
+      </dict>
       <key>variable-definition</key>
       <dict>
         <key>name</key>
         <string>meta.definition.variable.cpp2</string>
         <key>begin</key>
         <string>(?x)
-([_[:alpha:]][_[:alnum:]]*)\s*
+((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
 (:[^:])\s*
 </string>
         <key>beginCaptures</key>
         <dict>
           <key>1</key>
           <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#namespace-access</string>
+              </dict>
+            </array>
+          </dict>
+          <key>2</key>
+          <dict>
             <key>name</key>
             <string>entity.name.variable.cpp2</string>
           </dict>
-          <key>2</key>
+          <key>3</key>
           <dict>
             <key>name</key>
             <string>punctuation.separator.colon.cpp2</string>
@@ -401,27 +384,6 @@
           <dict>
             <key>include</key>
             <string>#statement</string>
-          </dict>
-        </array>
-      </dict>
-      <key>binary-operator</key>
-      <dict>
-        <key>name</key>
-        <string>keyword.operator.binary.cpp2</string>
-        <key>match</key>
-        <string>+|-|\*|/|==|!=|&lt;=|&gt;=|&lt;|&gt;|&lt;&lt;|&gt;&gt;|&amp;&amp;|\|\||&amp;|\||\^|~|!|%|&amp;&amp;|\|\||\?|:</string>
-      </dict>
-      <key>binary-operation</key>
-      <dict>
-        <key>patterns</key>
-        <array>
-          <dict>
-            <key>include</key>
-            <string>#expression</string>
-          </dict>
-          <dict>
-            <key>include</key>
-            <string/>
           </dict>
         </array>
       </dict>
