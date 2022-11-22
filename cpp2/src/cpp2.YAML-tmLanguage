@@ -5,6 +5,7 @@ name: cpp2
 variables:
   identifier: '[_[:alpha:]][_[:alnum:]]*'
   colon: ':[^:]'
+  coloncolon: '::'
 
 patterns:
 - include: '#comment'
@@ -25,6 +26,86 @@ repository:
     patterns:
     - include: '#function-definition'
 
+  expression:
+    name: meta.expression.cpp2
+    patterns:
+    - include: '#string'
+    - include: '#function-call'
+    - include: '#variable-definition'
+    - include: '#variable-assignment' 
+    - include: '#namespaced-variable'
+    - include: '#variable-name'
+
+  return-statement:
+    name: meta.return-statement.cpp2
+    begin: \b(return)\b
+    beginCaptures:
+      "1": { name: keyword.control.return.cpp2 }
+    end: (?<=;)
+    patterns:
+    - include: '#expression'
+
+  variable-name:
+    name: variable.name.cpp2
+    match: '{{identifier}}'
+  
+  namespaced-variable:
+    patterns:
+    - match: ({{identifier}})\s*(::)
+      captures:
+        '1': { name: entity.name.namespace.cpp2 }
+        '2': { name: punctuation.static-accessor.cpp2 }
+    - match: (::)\s*({{identifier}})
+      captures:
+        '1': { name: punctuation.static-accessor.cpp2 }
+        '2': { name: entity.name.variable.cpp2 }
+    - include: '#variable-name'
+
+  statement:
+    name: meta.statement.cpp2
+    patterns:
+    - include: '#comment'
+    - include: '#return-statement'
+    - include: '#expression'
+
+  variable-definition:
+    name: meta.definition.variable.cpp2
+    begin: |
+      (?x)
+      ({{identifier}})\s*
+      ({{colon}})\s*
+    beginCaptures:
+      "1": { name: entity.name.variable.cpp2 }
+      "2": { name: punctuation.separator.colon.cpp2 }
+    end: (?<=;)
+    patterns:
+    - include: '#typing'
+    - include: '#assignment'
+
+  assignment:
+    name: meta.assignment.cpp2
+    begin: |
+      (?x)
+      (=)\s*
+    beginCaptures:
+      "1": { name: keyword.operator.assignment.cpp2 }
+    end: (?<=;)
+    endCaptures:
+      "0": { name: punctuation.terminator.statement.cpp2 }
+    patterns:
+    - include: '#expression'
+
+  variable-assignment:
+    begin: |
+      (?x)
+      ({{identifier}})\s*
+      (?=[=])
+    beginCaptures:
+      "1": { name: entity.name.variable.cpp2 }
+    end: (?<=;) 
+    patterns:
+    - include: '#assignment'
+
   function-definition:
     name: meta.definition.function.cpp2
     begin: |
@@ -36,7 +117,7 @@ repository:
       "2": { name: punctuation.separator.colon.cpp2 }
     end: (?<=[\}\;])
     patterns:
-    - include: '#function-type'
+    - include: '#function-typing'
     - include: '#in-brackets-function-assignment'
     - include: '#single-expression-function-assignment'
 
@@ -62,15 +143,17 @@ repository:
     beginCaptures:
       "1": { name: keyword.operator.assignment.cpp2 }
       "2": { name: punctuation.curlybrace.open.cpp2 }
-    end: \}
+    end: (\})(;)?
     endCaptures:
-      '0': { name: punctuation.curlybrace.close.cpp2 }
+      "1": { name: punctuation.curlybrace.close.cpp2 }
+      "2": { name: punctuation.terminator.statement.cpp2 }
     patterns:
     - include: '#function-content'
 
   function-content:
     patterns:
     - include: '#comment'
+    - include: '#statement'
 
   # variable-definition:
   #   name: meta.variable-definition.cpp2
@@ -101,14 +184,19 @@ repository:
   #     patterns:
   #     - include: '#type'
     
-  # typing:
-  #   name: meta.typing.cpp2
-  #   begin: (?:(:)\s*)
-  #   beginCaptures:
-  #     '1': { name: punctuation.separator.colon.cpp2 }
-  #   end: (?=[\{\}\n;,])
-  #   patterns:
-  #   - include: '#type'
+  typing:
+    name: meta.typing.cpp2
+    begin: (?<={{colon}})\s*
+    end: (?=\s*(?=[=;]))
+    patterns:
+    - include: '#type'   
+
+  function-typing:
+    name: meta.typing.cpp2
+    begin: (?<={{colon}})\s*
+    end: (?=\s*(?=[=;]))
+    patterns:
+    - include: '#function-type'
 
   type:
     name: meta.type.cpp2
@@ -473,40 +561,38 @@ repository:
   #   patterns:
   #   - include: '#expression'
 
-  # function-call:
-  #   name: meta.function-call.cpp2
-  #   begin: |
-  #     (?x)
-  #       \b(?=
-  #         ({{identifier}}) \s* (\()
-  #       )
-  #   end: (?<=\))
-  #   endCaptures:
-  #     '0': {name: punctuation.definition.arguments.end.cpp2}
-  #   patterns:
-  #     - include: '#function-name'
-  #     - include: '#function-arguments'
+  function-call:
+    name: meta.function-call.cpp2
+    begin: |
+      (?x)
+        \b(?=
+          ({{identifier}}) \s* (\()
+        )
+    end: (?<=\))
+    patterns:
+      - include: '#function-name'
+      - include: '#function-arguments'
 
-  # function-name:
-  #   patterns:
-  #     - match: |
-  #         (?x)
-  #           \b ({{identifier}}) \b
-  #       captures:
-  #         '1': { name: entity.name.function.cpp2 }
+  function-name:
+    patterns:
+      - match: |
+          (?x)
+            \b ({{identifier}}) \b
+        captures:
+          '1': { name: entity.name.function.cpp2 }
 
-  # function-arguments:
-  #   name: meta.function.arguments.cpp2
-  #   begin: \(
-  #   beginCaptures:
-  #     '0': {name: punctuation.definition.arguments.begin.cpp2}
-  #   end: \)
-  #   endCaptures:
-  #     '0': {name: punctuation.definition.arguments.end.cpp2}
-  #   patterns:
-  #   - include: '#comment'
-  #   - include: '#expression'
-  #   - include: '#punctuation-comma'
+  function-arguments:
+    name: meta.function.arguments.cpp2
+    begin: \(
+    beginCaptures:
+      '0': {name: punctuation.definition.arguments.begin.cpp2}
+    end: \)
+    endCaptures:
+      '0': {name: punctuation.definition.arguments.end.cpp2}
+    patterns:
+    - include: '#comment'
+    - include: '#expression'
+    - include: '#punctuation-comma'
 
 
   # boolean-literal:
@@ -609,13 +695,13 @@ repository:
   #         - match: "(?:(?:[0-9a-zA-Z_\\.]|_)|(?<=[eE])[+-])+"
   #           name: invalid.illegal.constant.numeric.cpp2
 
-  # strings:
-  #   name: string.quoted.double.cpp2
-  #   begin: "\""
-  #   end: "\""
-  #   patterns:
-  #   - name: constant.character.escape.cpp2
-  #     match: "\\\\."
+  string:
+    name: string.quoted.double.cpp2
+    begin: "\""
+    end: "\""
+    patterns:
+    - name: constant.character.escape.cpp2
+      match: "\\\\."
 
   # template-definition:
     # begin: (?<!\w)(template)(?:(?:\s)+)?(<)
