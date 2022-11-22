@@ -5,7 +5,7 @@ name: cpp2
 variables:
   identifier: '[_[:alpha:]][_[:alnum:]]*'
   namespaced_identifier: '((?:{{identifier}}::)*)({{identifier}})'
-  colon: ':[^:]'
+  colon: ':(?:[\s]|$)'
   coloncolon: '::'
 
 patterns:
@@ -31,11 +31,11 @@ repository:
     name: meta.expression.cpp2
     patterns:
     - include: '#string'
+    - include: '#unary-operator'
+    - include: '#binary-operator'
     - include: '#function-call'
-    - include: '#variable-definition'
-    - include: '#variable-assignment' 
-    # - include: '#variable-name'
-    # - include: '#binary-operator'
+    - include: '#variable-definition-typed'
+    - include: '#variable-name'
 
   return-statement:
     name: meta.return-statement.cpp2
@@ -49,7 +49,6 @@ repository:
   statement:
     name: meta.statement.cpp2
     patterns:
-    - include: '#comment'
     - include: '#return-statement'
     - include: '#expression'
 
@@ -63,7 +62,16 @@ repository:
       patterns:
       - include: '#namespace-access'     
 
-  variable-definition:
+  variable-name:
+    name: meta.definition.variable.cpp2
+    match: '{{namespaced_identifier}}'
+    captures:
+      "1": 
+        patterns: 
+        - include: '#namespace-access'
+      "2": { name: entity.name.variable.cpp2 }
+
+  variable-definition-typed:
     name: meta.definition.variable.cpp2
     begin: |
       (?x)
@@ -93,16 +101,19 @@ repository:
     patterns:
     - include: '#expression'
 
-  variable-assignment:
-    begin: |
-      (?x)
-      ({{identifier}})\s*
-      (?=[=])
-    beginCaptures:
-      "1": { name: entity.name.variable.cpp2 }
-    end: (?<=;) 
-    patterns:
-    - include: '#assignment'
+  # variable-assignment:
+  #   begin: |
+  #     (?x)
+  #     {{namespaced_identifier}}\s*
+  #     (?=[=])
+  #   beginCaptures:
+  #     "1":
+  #       patterns:
+  #       - include: '#namespace-access'
+  #     "2": { name: entity.name.variable.cpp2 }
+  #   end: (?<=;) 
+  #   patterns:
+  #   - include: '#assignment'
 
   function-definition:
     name: meta.definition.function.cpp2
@@ -153,16 +164,34 @@ repository:
     - include: '#comment'
     - include: '#statement'
 
-  # binary-operator:
-  #   name: keyword.operator.binary.cpp2
-  #   # arithmetic
-  #   match: '+|-|\*|/|%'
-  #   # bitwise
-  #   match: '&|\||\^|~|<<|>>'
-  #   # comparison
-  #   match: '==|!=|<|>|<=|>='
-  #   # logical
-  #   match: '&&|\|\|'
+  binary-operator:
+    name: keyword.operator.binary.cpp2
+    # patterns:
+    match: |
+      (?x)
+      (
+        = | := |
+        \+ | - | \* | / | % | 
+        \+= | -= | \*= | /= | %= |
+        << | >> | & | \| | ~ | \^ | 
+        <<= | >>= | &= | \|= | \^= |
+        && | \|\| |
+        &&= | \|\|= |
+        == | != | < | > | <= | >= | <=> 
+      )
+
+  unary-operator:
+    name: keyword.operator.unary.cpp2
+    match: |
+      (?x)
+      (?<={{namespaced_identifier}})
+      (
+        \+\+ | -- |
+        &    | \$ |
+        \.
+      )
+
+    
 
   # variable-definition:
   #   name: meta.variable-definition.cpp2
@@ -574,12 +603,16 @@ repository:
     name: meta.function-call.cpp2
     begin: |
       (?x)
-        \b(?=
-          ({{identifier}}) \s* (\()
-        )
+      {{namespaced_identifier}}\s*
+      (?=\()
+    beginCaptures:
+      "1": 
+        patterns: 
+        - include: '#namespace-access'
+      "2": { name: entity.name.function.cpp2 }
+
     end: (?<=\))
     patterns:
-      - include: '#function-name'
       - include: '#function-arguments'
 
   function-name:

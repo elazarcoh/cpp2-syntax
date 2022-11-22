@@ -35,7 +35,7 @@
         <key>name</key>
         <string>punctuation.separator.colon.cpp2</string>
         <key>match</key>
-        <string>:[^:]</string>
+        <string>:(?:[\s]|$)</string>
       </dict>
       <key>definition</key>
       <dict>
@@ -61,15 +61,23 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#unary-operator</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#binary-operator</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#function-call</string>
           </dict>
           <dict>
             <key>include</key>
-            <string>#variable-definition</string>
+            <string>#variable-definition-typed</string>
           </dict>
           <dict>
             <key>include</key>
-            <string>#variable-assignment</string>
+            <string>#variable-name</string>
           </dict>
         </array>
       </dict>
@@ -103,10 +111,6 @@
         <string>meta.statement.cpp2</string>
         <key>patterns</key>
         <array>
-          <dict>
-            <key>include</key>
-            <string>#comment</string>
-          </dict>
           <dict>
             <key>include</key>
             <string>#return-statement</string>
@@ -149,14 +153,39 @@
           </dict>
         </array>
       </dict>
-      <key>variable-definition</key>
+      <key>variable-name</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.variable.cpp2</string>
+        <key>match</key>
+        <string>((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)</string>
+        <key>captures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#namespace-access</string>
+              </dict>
+            </array>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.variable.cpp2</string>
+          </dict>
+        </dict>
+      </dict>
+      <key>variable-definition-typed</key>
       <dict>
         <key>name</key>
         <string>meta.definition.variable.cpp2</string>
         <key>begin</key>
         <string>(?x)
 ((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
-(:[^:])\s*
+(:(?:[\s]|$))\s*
 </string>
         <key>beginCaptures</key>
         <dict>
@@ -229,31 +258,6 @@
           </dict>
         </array>
       </dict>
-      <key>variable-assignment</key>
-      <dict>
-        <key>begin</key>
-        <string>(?x)
-([_[:alpha:]][_[:alnum:]]*)\s*
-(?=[=])
-</string>
-        <key>beginCaptures</key>
-        <dict>
-          <key>1</key>
-          <dict>
-            <key>name</key>
-            <string>entity.name.variable.cpp2</string>
-          </dict>
-        </dict>
-        <key>end</key>
-        <string>(?&lt;=;)</string>
-        <key>patterns</key>
-        <array>
-          <dict>
-            <key>include</key>
-            <string>#assignment</string>
-          </dict>
-        </array>
-      </dict>
       <key>function-definition</key>
       <dict>
         <key>name</key>
@@ -261,7 +265,7 @@
         <key>begin</key>
         <string>(?x)
 ([_[:alpha:]][_[:alnum:]]*)\s*
-(:[^:])\s*
+(:(?:[\s]|$))\s*
 </string>
         <key>beginCaptures</key>
         <dict>
@@ -387,12 +391,44 @@
           </dict>
         </array>
       </dict>
+      <key>binary-operator</key>
+      <dict>
+        <key>name</key>
+        <string>keyword.operator.binary.cpp2</string>
+        <key>match</key>
+        <string>(?x)
+(
+  = | := |
+  \+ | - | \* | / | % | 
+  \+= | -= | \*= | /= | %= |
+  &lt;&lt; | &gt;&gt; | &amp; | \| | ~ | \^ | 
+  &lt;&lt;= | &gt;&gt;= | &amp;= | \|= | \^= |
+  &amp;&amp; | \|\| |
+  &amp;&amp;= | \|\|= |
+  == | != | &lt; | &gt; | &lt;= | &gt;= | &lt;=&gt; 
+)
+</string>
+      </dict>
+      <key>unary-operator</key>
+      <dict>
+        <key>name</key>
+        <string>keyword.operator.unary.cpp2</string>
+        <key>match</key>
+        <string>(?x)
+(?&lt;=((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*))
+(
+  \+\+ | -- |
+  &amp;    | \$ |
+  \.
+)
+</string>
+      </dict>
       <key>typing</key>
       <dict>
         <key>name</key>
         <string>meta.typing.cpp2</string>
         <key>begin</key>
-        <string>(?&lt;=:[^:])\s*</string>
+        <string>(?&lt;=:(?:[\s]|$))\s*</string>
         <key>end</key>
         <string>(?=\s*(?=[=;]))</string>
         <key>patterns</key>
@@ -408,7 +444,7 @@
         <key>name</key>
         <string>meta.typing.cpp2</string>
         <key>begin</key>
-        <string>(?&lt;=:[^:])\s*</string>
+        <string>(?&lt;=:(?:[\s]|$))\s*</string>
         <key>end</key>
         <string>(?=\s*(?=[=;]))</string>
         <key>patterns</key>
@@ -709,18 +745,31 @@
         <string>meta.function-call.cpp2</string>
         <key>begin</key>
         <string>(?x)
-  \b(?=
-    ([_[:alpha:]][_[:alnum:]]*) \s* (\()
-  )
+((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
+(?=\()
 </string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#namespace-access</string>
+              </dict>
+            </array>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.function.cpp2</string>
+          </dict>
+        </dict>
         <key>end</key>
         <string>(?&lt;=\))</string>
         <key>patterns</key>
         <array>
-          <dict>
-            <key>include</key>
-            <string>#function-name</string>
-          </dict>
           <dict>
             <key>include</key>
             <string>#function-arguments</string>
