@@ -18,7 +18,11 @@
       </dict>
       <dict>
         <key>include</key>
-        <string>#type-name</string>
+        <string>#scoped-code-block</string>
+      </dict>
+      <dict>
+        <key>include</key>
+        <string>#statement</string>
       </dict>
     </array>
     <key>repository</key>
@@ -61,11 +65,15 @@
           </dict>
           <dict>
             <key>include</key>
-            <string>#unary-operator</string>
+            <string>#numeric-literal</string>
           </dict>
           <dict>
             <key>include</key>
-            <string>#binary-operator</string>
+            <string>#boolean-literal</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#operators</string>
           </dict>
           <dict>
             <key>include</key>
@@ -114,6 +122,18 @@
           <dict>
             <key>include</key>
             <string>#return-statement</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#if</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#else</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#delete</string>
           </dict>
           <dict>
             <key>include</key>
@@ -281,81 +301,29 @@
           </dict>
         </dict>
         <key>end</key>
-        <string>(?&lt;=[\}\;])</string>
+        <string>(?&lt;=[=])</string>
         <key>patterns</key>
         <array>
           <dict>
             <key>include</key>
             <string>#function-typing</string>
           </dict>
-          <dict>
-            <key>include</key>
-            <string>#in-brackets-function-assignment</string>
-          </dict>
-          <dict>
-            <key>include</key>
-            <string>#single-expression-function-assignment</string>
-          </dict>
         </array>
       </dict>
-      <key>single-expression-function-assignment</key>
+      <key>scoped-code-block</key>
       <dict>
-        <key>name</key>
-        <string>meta.function.body.cpp2</string>
         <key>begin</key>
-        <string>(?x)
-(=)\s*
-</string>
+        <string>(\{)</string>
         <key>beginCaptures</key>
         <dict>
           <key>1</key>
-          <dict>
-            <key>name</key>
-            <string>keyword.operator.assignment.cpp2</string>
-          </dict>
-        </dict>
-        <key>end</key>
-        <string>;</string>
-        <key>endCaptures</key>
-        <dict>
-          <key>0</key>
-          <dict>
-            <key>name</key>
-            <string>punctuation.terminator.statement.cpp2</string>
-          </dict>
-        </dict>
-        <key>patterns</key>
-        <array>
-          <dict>
-            <key>include</key>
-            <string>#function-content</string>
-          </dict>
-        </array>
-      </dict>
-      <key>in-brackets-function-assignment</key>
-      <dict>
-        <key>name</key>
-        <string>meta.function.body.cpp2</string>
-        <key>begin</key>
-        <string>(?x)
-(=)\s*
-(\{)
-</string>
-        <key>beginCaptures</key>
-        <dict>
-          <key>1</key>
-          <dict>
-            <key>name</key>
-            <string>keyword.operator.assignment.cpp2</string>
-          </dict>
-          <key>2</key>
           <dict>
             <key>name</key>
             <string>punctuation.curlybrace.open.cpp2</string>
           </dict>
         </dict>
         <key>end</key>
-        <string>(\})(;)?</string>
+        <string>(\})</string>
         <key>endCaptures</key>
         <dict>
           <key>1</key>
@@ -363,21 +331,16 @@
             <key>name</key>
             <string>punctuation.curlybrace.close.cpp2</string>
           </dict>
-          <key>2</key>
-          <dict>
-            <key>name</key>
-            <string>punctuation.terminator.statement.cpp2</string>
-          </dict>
         </dict>
         <key>patterns</key>
         <array>
           <dict>
             <key>include</key>
-            <string>#function-content</string>
+            <string>#code-block-content</string>
           </dict>
         </array>
       </dict>
-      <key>function-content</key>
+      <key>code-block-content</key>
       <dict>
         <key>patterns</key>
         <array>
@@ -388,6 +351,10 @@
           <dict>
             <key>include</key>
             <string>#statement</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#scoped-code-block</string>
           </dict>
         </array>
       </dict>
@@ -401,7 +368,7 @@
   = | := |
   \+ | - | \* | / | % | 
   \+= | -= | \*= | /= | %= |
-  &lt;&lt; | &gt;&gt; | &amp; | \| | ~ | \^ | 
+  &lt;&lt; | &gt;&gt; | &amp; | \| | \^ | 
   &lt;&lt;= | &gt;&gt;= | &amp;= | \|= | \^= |
   &amp;&amp; | \|\| |
   &amp;&amp;= | \|\|= |
@@ -422,6 +389,115 @@
   \.
 )
 </string>
+      </dict>
+      <key>square-brackets-operator</key>
+      <dict>
+        <key>name</key>
+        <string>keyword.operator.square-brackets.cpp2</string>
+        <key>begin</key>
+        <string>(\[)</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.squarebracket.open.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(\])</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.squarebracket.close.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+        </array>
+      </dict>
+      <key>operators</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#binary-operator</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#unary-operator</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#square-brackets-operator</string>
+          </dict>
+        </array>
+      </dict>
+      <key>if</key>
+      <dict>
+        <key>begin</key>
+        <string>\b(if)\b</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.if.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[\{])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+        </array>
+      </dict>
+      <key>else</key>
+      <dict>
+        <key>begin</key>
+        <string>\b(else)\b</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.else.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[\{])</string>
+      </dict>
+      <key>delete</key>
+      <dict>
+        <key>begin</key>
+        <string>\b(delete)\b</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.delete.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>;</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+        </array>
       </dict>
       <key>typing</key>
       <dict>
@@ -468,6 +544,32 @@
           <dict>
             <key>include</key>
             <string>#type-name</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#pointer-type</string>
+          </dict>
+        </array>
+      </dict>
+      <key>pointer-type</key>
+      <dict>
+        <key>begin</key>
+        <string>(\*)</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.operator.pointer.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=\s*(?=[=;]))</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#type</string>
           </dict>
         </array>
       </dict>
@@ -835,6 +937,260 @@
             <string>#punctuation-comma</string>
           </dict>
         </array>
+      </dict>
+      <key>boolean-literal</key>
+      <dict>
+        <key>name</key>
+        <string>constant.language.boolean.cpp2</string>
+        <key>match</key>
+        <string>\b(true|false)\b</string>
+      </dict>
+      <key>numeric-literal</key>
+      <dict>
+        <key>comment</key>
+        <string>TODO taken from C# as is. Need to modify.</string>
+        <key>match</key>
+        <string>(?&lt;!\w)\.?\d(?:(?:[0-9a-zA-Z_\.]|_)|(?&lt;=[eE])[+-])*</string>
+        <key>captures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>begin</key>
+                <string>(?=.)</string>
+                <key>end</key>
+                <string>$</string>
+                <key>patterns</key>
+                <array>
+                  <dict>
+                    <key>match</key>
+                    <string>(\G(?=[0-9.])(?!0[xXbB]))([0-9](?:[0-9]|((?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)?((?:(?&lt;=[0-9])|\.(?=[0-9])))([0-9](?:[0-9]|((?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)?((?&lt;!_)([eE])(\+?)(\-?)((?:[0-9](?:[0-9]|(?:(?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)))?([fFdDmM](?!\w))?$</string>
+                    <key>captures</key>
+                    <dict>
+                      <key>2</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.decimal.cpp2</string>
+                        <key>patterns</key>
+                        <array>
+                          <dict>
+                            <key>match</key>
+                            <string>(?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])</string>
+                            <key>name</key>
+                            <string>constant.numeric.other.separator.thousands.cpp2</string>
+                          </dict>
+                        </array>
+                      </dict>
+                      <key>3</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.separator.thousands.cpp2</string>
+                      </dict>
+                      <key>4</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.separator.decimals.cpp2</string>
+                      </dict>
+                      <key>5</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.decimal.cpp2</string>
+                        <key>patterns</key>
+                        <array>
+                          <dict>
+                            <key>match</key>
+                            <string>(?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])</string>
+                            <key>name</key>
+                            <string>constant.numeric.other.separator.thousands.cpp2</string>
+                          </dict>
+                        </array>
+                      </dict>
+                      <key>6</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.separator.thousands.cpp2</string>
+                      </dict>
+                      <key>8</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.exponent.cpp2</string>
+                      </dict>
+                      <key>9</key>
+                      <dict>
+                        <key>name</key>
+                        <string>keyword.operator.arithmetic.cpp2</string>
+                      </dict>
+                      <key>10</key>
+                      <dict>
+                        <key>name</key>
+                        <string>keyword.operator.arithmetic.cpp2</string>
+                      </dict>
+                      <key>11</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.decimal.cpp2</string>
+                        <key>patterns</key>
+                        <array>
+                          <dict>
+                            <key>match</key>
+                            <string>(?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])</string>
+                            <key>name</key>
+                            <string>constant.numeric.other.separator.thousands.cpp2</string>
+                          </dict>
+                        </array>
+                      </dict>
+                      <key>12</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.suffix.cpp2</string>
+                      </dict>
+                    </dict>
+                  </dict>
+                  <dict>
+                    <key>match</key>
+                    <string>(\G0[bB])([01_](?:[01_]|((?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\w))?$</string>
+                    <key>captures</key>
+                    <dict>
+                      <key>1</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.preffix.binary.cpp2</string>
+                      </dict>
+                      <key>2</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.binary.cpp2</string>
+                        <key>patterns</key>
+                        <array>
+                          <dict>
+                            <key>match</key>
+                            <string>(?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])</string>
+                            <key>name</key>
+                            <string>constant.numeric.other.separator.thousands.cpp2</string>
+                          </dict>
+                        </array>
+                      </dict>
+                      <key>3</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.separator.thousands.cpp2</string>
+                      </dict>
+                      <key>4</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.suffix.cpp2</string>
+                      </dict>
+                    </dict>
+                  </dict>
+                  <dict>
+                    <key>match</key>
+                    <string>(\G0[xX])([0-9a-fA-F](?:[0-9a-fA-F]|((?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\w))?$</string>
+                    <key>captures</key>
+                    <dict>
+                      <key>1</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.preffix.hex.cpp2</string>
+                      </dict>
+                      <key>2</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.hex.cpp2</string>
+                        <key>patterns</key>
+                        <array>
+                          <dict>
+                            <key>match</key>
+                            <string>(?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])</string>
+                            <key>name</key>
+                            <string>constant.numeric.other.separator.thousands.cpp2</string>
+                          </dict>
+                        </array>
+                      </dict>
+                      <key>3</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.separator.thousands.cpp2</string>
+                      </dict>
+                      <key>4</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.suffix.cpp2</string>
+                      </dict>
+                    </dict>
+                  </dict>
+                  <dict>
+                    <key>match</key>
+                    <string>(\G(?=[0-9.])(?!0[xXbB]))([0-9](?:[0-9]|((?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?&lt;!_)([eE])(\+?)(\-?)((?:[0-9](?:[0-9]|(?:(?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)))?((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\w))?$</string>
+                    <key>captures</key>
+                    <dict>
+                      <key>2</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.decimal.cpp2</string>
+                        <key>patterns</key>
+                        <array>
+                          <dict>
+                            <key>match</key>
+                            <string>(?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])</string>
+                            <key>name</key>
+                            <string>constant.numeric.other.separator.thousands.cpp2</string>
+                          </dict>
+                        </array>
+                      </dict>
+                      <key>3</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.separator.thousands.cpp2</string>
+                      </dict>
+                      <key>5</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.exponent.cpp2</string>
+                      </dict>
+                      <key>6</key>
+                      <dict>
+                        <key>name</key>
+                        <string>keyword.operator.arithmetic.cpp2</string>
+                      </dict>
+                      <key>7</key>
+                      <dict>
+                        <key>name</key>
+                        <string>keyword.operator.arithmetic.cpp2</string>
+                      </dict>
+                      <key>8</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.decimal.cpp2</string>
+                        <key>patterns</key>
+                        <array>
+                          <dict>
+                            <key>match</key>
+                            <string>(?&lt;=[0-9a-fA-F])_(?=[0-9a-fA-F])</string>
+                            <key>name</key>
+                            <string>constant.numeric.other.separator.thousands.cpp2</string>
+                          </dict>
+                        </array>
+                      </dict>
+                      <key>9</key>
+                      <dict>
+                        <key>name</key>
+                        <string>constant.numeric.other.suffix.cpp2</string>
+                      </dict>
+                    </dict>
+                  </dict>
+                  <dict>
+                    <key>match</key>
+                    <string>(?:(?:[0-9a-zA-Z_\.]|_)|(?&lt;=[eE])[+-])+</string>
+                    <key>name</key>
+                    <string>invalid.illegal.constant.numeric.cpp2</string>
+                  </dict>
+                </array>
+              </dict>
+            </array>
+          </dict>
+        </dict>
       </dict>
       <key>string</key>
       <dict>

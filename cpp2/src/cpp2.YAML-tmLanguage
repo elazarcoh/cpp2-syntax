@@ -11,7 +11,8 @@ variables:
 patterns:
 - include: '#comment'
 - include: '#function-definition'
-- include: '#type-name'
+- include: '#scoped-code-block'
+- include: '#statement'
 
 repository:
   punctuation-comma:
@@ -31,8 +32,9 @@ repository:
     name: meta.expression.cpp2
     patterns:
     - include: '#string'
-    - include: '#unary-operator'
-    - include: '#binary-operator'
+    - include: '#numeric-literal'
+    - include: '#boolean-literal'
+    - include: '#operators'
     - include: '#function-call'
     - include: '#variable-definition-typed'
     - include: '#variable-name'
@@ -50,6 +52,9 @@ repository:
     name: meta.statement.cpp2
     patterns:
     - include: '#return-statement'
+    - include: '#if'
+    - include: '#else'
+    - include: '#delete'
     - include: '#expression'
 
   namespace-access:
@@ -101,20 +106,6 @@ repository:
     patterns:
     - include: '#expression'
 
-  # variable-assignment:
-  #   begin: |
-  #     (?x)
-  #     {{namespaced_identifier}}\s*
-  #     (?=[=])
-  #   beginCaptures:
-  #     "1":
-  #       patterns:
-  #       - include: '#namespace-access'
-  #     "2": { name: entity.name.variable.cpp2 }
-  #   end: (?<=;) 
-  #   patterns:
-  #   - include: '#assignment'
-
   function-definition:
     name: meta.definition.function.cpp2
     begin: |
@@ -124,56 +115,35 @@ repository:
     beginCaptures:
       "1": { name: entity.name.function.cpp2 }
       "2": { name: punctuation.separator.colon.cpp2 }
-    end: (?<=[\}\;])
+    end: (?<=[=])
     patterns:
     - include: '#function-typing'
-    - include: '#in-brackets-function-assignment'
-    - include: '#single-expression-function-assignment'
 
-  single-expression-function-assignment:
-    name: meta.function.body.cpp2
-    begin: |
-      (?x)
-      (=)\s*
+  scoped-code-block:
+    begin: (\{)
     beginCaptures:
-      "1": { name: keyword.operator.assignment.cpp2 }
-    end: ';'
-    endCaptures:
-      "0": { name: punctuation.terminator.statement.cpp2 }
-    patterns:
-    - include: '#function-content'
-
-  in-brackets-function-assignment:
-    name: meta.function.body.cpp2
-    begin: |
-      (?x)
-      (=)\s*
-      (\{)
-    beginCaptures:
-      "1": { name: keyword.operator.assignment.cpp2 }
-      "2": { name: punctuation.curlybrace.open.cpp2 }
-    end: (\})(;)?
+      "1": { name: punctuation.curlybrace.open.cpp2 }
+    end: (\})
     endCaptures:
       "1": { name: punctuation.curlybrace.close.cpp2 }
-      "2": { name: punctuation.terminator.statement.cpp2 }
     patterns:
-    - include: '#function-content'
+    - include: '#code-block-content'
 
-  function-content:
+  code-block-content:
     patterns:
     - include: '#comment'
     - include: '#statement'
+    - include: '#scoped-code-block'
 
   binary-operator:
     name: keyword.operator.binary.cpp2
-    # patterns:
     match: |
       (?x)
       (
         = | := |
         \+ | - | \* | / | % | 
         \+= | -= | \*= | /= | %= |
-        << | >> | & | \| | ~ | \^ | 
+        << | >> | & | \| | \^ | 
         <<= | >>= | &= | \|= | \^= |
         && | \|\| |
         &&= | \|\|= |
@@ -191,7 +161,44 @@ repository:
         \.
       )
 
-    
+  square-brackets-operator:
+    name: keyword.operator.square-brackets.cpp2
+    begin: (\[)
+    beginCaptures:
+      "1": { name: punctuation.squarebracket.open.cpp2 }
+    end: (\])
+    endCaptures:
+      "1": { name: punctuation.squarebracket.close.cpp2 }
+    patterns:
+    - include: '#expression'
+  
+  operators:
+    patterns:
+    - include: '#binary-operator'
+    - include: '#unary-operator'
+    - include: '#square-brackets-operator'
+
+  if:
+    begin: \b(if)\b
+    beginCaptures:
+      "1": { name: keyword.control.if.cpp2 }
+    end: (?=[\{])
+    patterns:
+    - include: '#expression'
+  
+  else:
+    begin: \b(else)\b
+    beginCaptures:
+      "1": { name: keyword.control.else.cpp2 }
+    end: (?=[\{])
+
+  delete:
+    begin: \b(delete)\b
+    beginCaptures:
+      "1": { name: keyword.control.delete.cpp2 }
+    end: ';'
+    patterns:
+    - include: '#expression'
 
   # variable-definition:
   #   name: meta.variable-definition.cpp2
@@ -245,7 +252,15 @@ repository:
   #   - include: '#unit-type'
   #   - include: '#type-builtin'
     - include: '#type-name'
-  #   - include: '#enum-name'
+    - include: '#pointer-type'
+
+  pointer-type:
+    begin: (\*)
+    beginCaptures:
+      "1": { name: keyword.operator.pointer.cpp2 }
+    end: (?=\s*(?=[=;]))
+    patterns:
+    - include: '#type'
 
   # unpacked:
   #   name: meta.unpacked.cpp2
@@ -636,106 +651,105 @@ repository:
     - include: '#expression'
     - include: '#punctuation-comma'
 
+  boolean-literal:
+    name: constant.language.boolean.cpp2
+    match: \b(true|false)\b
 
-  # boolean-literal:
-  #   name: constant.language.boolean.cpp2
-  #   match: \b(true|false)\b
-
-  # numeric-literal:
-  #   comment: TODO taken from C# as is. Need to modify.
-  #   match: "(?<!\\w)\\.?\\d(?:(?:[0-9a-zA-Z_\\.]|_)|(?<=[eE])[+-])*"
-  #   captures:
-  #     '0':
-  #       patterns:
-  #       - begin: "(?=.)"
-  #         end: "$"
-  #         patterns:
-  #         # Decimal number (with optional thousands separator) with mandatory decimal part (with optional thousands separator) and optional exponent (also with optional thousands separator)
-  #         - match: "(\\G(?=[0-9.])(?!0[xXbB]))([0-9](?:[0-9]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)?((?:(?<=[0-9])|\\.(?=[0-9])))([0-9](?:[0-9]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)?((?<!_)([eE])(\\+?)(\\-?)((?:[0-9](?:[0-9]|(?:(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)))?([fFdDmM](?!\\w))?$"
-  #           captures:
-  #             '2':
-  #               name: constant.numeric.decimal.cpp2
-  #               patterns:
-  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
-  #                 name: constant.numeric.other.separator.thousands.cpp2
-  #             '3':
-  #               name: constant.numeric.other.separator.thousands.cpp2
-  #             '4':
-  #               name: constant.numeric.other.separator.decimals.cpp2
-  #             '5':
-  #               name: constant.numeric.decimal.cpp2
-  #               patterns:
-  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
-  #                 name: constant.numeric.other.separator.thousands.cpp2
-  #             '6':
-  #               name: constant.numeric.other.separator.thousands.cpp2
-  #             '8':
-  #               name: constant.numeric.other.exponent.cpp2
-  #             '9':
-  #               name: keyword.operator.arithmetic.cpp2
-  #             '10':
-  #               name: keyword.operator.arithmetic.cpp2
-  #             '11':
-  #               name: constant.numeric.decimal.cpp2
-  #               patterns:
-  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
-  #                 name: constant.numeric.other.separator.thousands.cpp2
-  #             '12':
-  #               name: constant.numeric.other.suffix.cpp2
-  #         # Binary number (with optional thousands separator)
-  #         - match: "(\\G0[bB])([01_](?:[01_]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\\w))?$"
-  #           captures:
-  #             '1':
-  #               name: constant.numeric.other.preffix.binary.cpp2
-  #             '2':
-  #               name: constant.numeric.binary.cpp2
-  #               patterns:
-  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
-  #                 name: constant.numeric.other.separator.thousands.cpp2
-  #             '3':
-  #               name: constant.numeric.other.separator.thousands.cpp2
-  #             '4':
-  #               name: constant.numeric.other.suffix.cpp2
-  #         # Hexadecimal number (with optional thousands separator)
-  #         - match: "(\\G0[xX])([0-9a-fA-F](?:[0-9a-fA-F]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\\w))?$"
-  #           captures:
-  #             '1':
-  #               name: constant.numeric.other.preffix.hex.cpp2
-  #             '2':
-  #               name: constant.numeric.hex.cpp2
-  #               patterns:
-  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
-  #                 name: constant.numeric.other.separator.thousands.cpp2
-  #             '3':
-  #               name: constant.numeric.other.separator.thousands.cpp2
-  #             '4':
-  #               name: constant.numeric.other.suffix.cpp2
-  #         # Integral number (with optional thousands separator) with no decimal part and optional exponent (also with optional thousands separator)
-  #         - match: "(\\G(?=[0-9.])(?!0[xXbB]))([0-9](?:[0-9]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?<!_)([eE])(\\+?)(\\-?)((?:[0-9](?:[0-9]|(?:(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)))?((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\\w))?$"
-  #           captures:
-  #             '2':
-  #               name: constant.numeric.decimal.cpp2
-  #               patterns:
-  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
-  #                 name: constant.numeric.other.separator.thousands.cpp2
-  #             '3':
-  #               name: constant.numeric.other.separator.thousands.cpp2
-  #             '5':
-  #               name: constant.numeric.other.exponent.cpp2
-  #             '6':
-  #               name: keyword.operator.arithmetic.cpp2
-  #             '7':
-  #               name: keyword.operator.arithmetic.cpp2
-  #             '8':
-  #               name: constant.numeric.decimal.cpp2
-  #               patterns:
-  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
-  #                 name: constant.numeric.other.separator.thousands.cpp2
-  #             '9':
-  #               name: constant.numeric.other.suffix.cpp2
-  #         # Capture the rest as an invalid numeric literal
-  #         - match: "(?:(?:[0-9a-zA-Z_\\.]|_)|(?<=[eE])[+-])+"
-  #           name: invalid.illegal.constant.numeric.cpp2
+  numeric-literal:
+    comment: TODO taken from C# as is. Need to modify.
+    match: "(?<!\\w)\\.?\\d(?:(?:[0-9a-zA-Z_\\.]|_)|(?<=[eE])[+-])*"
+    captures:
+      '0':
+        patterns:
+        - begin: "(?=.)"
+          end: "$"
+          patterns:
+          # Decimal number (with optional thousands separator) with mandatory decimal part (with optional thousands separator) and optional exponent (also with optional thousands separator)
+          - match: "(\\G(?=[0-9.])(?!0[xXbB]))([0-9](?:[0-9]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)?((?:(?<=[0-9])|\\.(?=[0-9])))([0-9](?:[0-9]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)?((?<!_)([eE])(\\+?)(\\-?)((?:[0-9](?:[0-9]|(?:(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)))?([fFdDmM](?!\\w))?$"
+            captures:
+              '2':
+                name: constant.numeric.decimal.cpp2
+                patterns:
+                - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+                  name: constant.numeric.other.separator.thousands.cpp2
+              '3':
+                name: constant.numeric.other.separator.thousands.cpp2
+              '4':
+                name: constant.numeric.other.separator.decimals.cpp2
+              '5':
+                name: constant.numeric.decimal.cpp2
+                patterns:
+                - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+                  name: constant.numeric.other.separator.thousands.cpp2
+              '6':
+                name: constant.numeric.other.separator.thousands.cpp2
+              '8':
+                name: constant.numeric.other.exponent.cpp2
+              '9':
+                name: keyword.operator.arithmetic.cpp2
+              '10':
+                name: keyword.operator.arithmetic.cpp2
+              '11':
+                name: constant.numeric.decimal.cpp2
+                patterns:
+                - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+                  name: constant.numeric.other.separator.thousands.cpp2
+              '12':
+                name: constant.numeric.other.suffix.cpp2
+          # Binary number (with optional thousands separator)
+          - match: "(\\G0[bB])([01_](?:[01_]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\\w))?$"
+            captures:
+              '1':
+                name: constant.numeric.other.preffix.binary.cpp2
+              '2':
+                name: constant.numeric.binary.cpp2
+                patterns:
+                - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+                  name: constant.numeric.other.separator.thousands.cpp2
+              '3':
+                name: constant.numeric.other.separator.thousands.cpp2
+              '4':
+                name: constant.numeric.other.suffix.cpp2
+          # Hexadecimal number (with optional thousands separator)
+          - match: "(\\G0[xX])([0-9a-fA-F](?:[0-9a-fA-F]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\\w))?$"
+            captures:
+              '1':
+                name: constant.numeric.other.preffix.hex.cpp2
+              '2':
+                name: constant.numeric.hex.cpp2
+                patterns:
+                - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+                  name: constant.numeric.other.separator.thousands.cpp2
+              '3':
+                name: constant.numeric.other.separator.thousands.cpp2
+              '4':
+                name: constant.numeric.other.suffix.cpp2
+          # Integral number (with optional thousands separator) with no decimal part and optional exponent (also with optional thousands separator)
+          - match: "(\\G(?=[0-9.])(?!0[xXbB]))([0-9](?:[0-9]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?<!_)([eE])(\\+?)(\\-?)((?:[0-9](?:[0-9]|(?:(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)))?((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\\w))?$"
+            captures:
+              '2':
+                name: constant.numeric.decimal.cpp2
+                patterns:
+                - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+                  name: constant.numeric.other.separator.thousands.cpp2
+              '3':
+                name: constant.numeric.other.separator.thousands.cpp2
+              '5':
+                name: constant.numeric.other.exponent.cpp2
+              '6':
+                name: keyword.operator.arithmetic.cpp2
+              '7':
+                name: keyword.operator.arithmetic.cpp2
+              '8':
+                name: constant.numeric.decimal.cpp2
+                patterns:
+                - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+                  name: constant.numeric.other.separator.thousands.cpp2
+              '9':
+                name: constant.numeric.other.suffix.cpp2
+          # Capture the rest as an invalid numeric literal
+          - match: "(?:(?:[0-9a-zA-Z_\\.]|_)|(?<=[eE])[+-])+"
+            name: invalid.illegal.constant.numeric.cpp2
 
   string:
     name: string.quoted.double.cpp2
