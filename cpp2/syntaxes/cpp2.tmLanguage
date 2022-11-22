@@ -56,7 +56,7 @@
         <key>begin</key>
         <string>(?x)
 ([_[:alpha:]][_[:alnum:]]*)\s*
-(:[^:])
+(:[^:])\s*
 </string>
         <key>beginCaptures</key>
         <dict>
@@ -64,6 +64,11 @@
           <dict>
             <key>name</key>
             <string>entity.name.function.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
           </dict>
         </dict>
         <key>end</key>
@@ -73,6 +78,98 @@
           <dict>
             <key>include</key>
             <string>#function-type</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#in-brackets-function-assignment</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#single-expression-function-assignment</string>
+          </dict>
+        </array>
+      </dict>
+      <key>single-expression-function-assignment</key>
+      <dict>
+        <key>name</key>
+        <string>meta.function.body.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+(=)\s*
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.operator.assignment.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>;</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.terminator.statement.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#function-content</string>
+          </dict>
+        </array>
+      </dict>
+      <key>in-brackets-function-assignment</key>
+      <dict>
+        <key>name</key>
+        <string>meta.function.body.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+(=)\s*
+(\{)
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.operator.assignment.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.curlybrace.open.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>\}</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.curlybrace.close.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#function-content</string>
+          </dict>
+        </array>
+      </dict>
+      <key>function-content</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#comment</string>
           </dict>
         </array>
       </dict>
@@ -154,7 +251,7 @@
 (?=\()
 </string>
         <key>end</key>
-        <string>(?=[=])</string>
+        <string>(?=[=;])</string>
         <key>patterns</key>
         <array>
           <dict>
@@ -278,6 +375,85 @@
           <dict>
             <key>include</key>
             <string>#punctuation-comma</string>
+          </dict>
+        </array>
+      </dict>
+      <key>comment</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>name</key>
+            <string>comment.block.cpp2</string>
+            <key>begin</key>
+            <string>/\*</string>
+            <key>beginCaptures</key>
+            <dict>
+              <key>0</key>
+              <dict>
+                <key>name</key>
+                <string>punctuation.definition.comment.cpp2</string>
+              </dict>
+            </dict>
+            <key>end</key>
+            <string>\*/</string>
+            <key>endCaptures</key>
+            <dict>
+              <key>0</key>
+              <dict>
+                <key>name</key>
+                <string>punctuation.definition.comment.cpp2</string>
+              </dict>
+            </dict>
+          </dict>
+          <dict>
+            <key>begin</key>
+            <string>(^\s+)?(?=//)</string>
+            <key>beginCaptures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>punctuation.whitespace.comment.leading.cpp2</string>
+              </dict>
+            </dict>
+            <key>end</key>
+            <string>(?=$)</string>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>name</key>
+                <string>comment.block.documentation.cpp2</string>
+                <key>begin</key>
+                <string>(?&lt;!/)///(?!/)</string>
+                <key>beginCaptures</key>
+                <dict>
+                  <key>0</key>
+                  <dict>
+                    <key>name</key>
+                    <string>punctuation.definition.comment.cpp2</string>
+                  </dict>
+                </dict>
+                <key>end</key>
+                <string>(?=$)</string>
+              </dict>
+              <dict>
+                <key>name</key>
+                <string>comment.line.double-slash.cpp2</string>
+                <key>begin</key>
+                <string>(?&lt;!/)//(?:(?!/)|(?=//))</string>
+                <key>beginCaptures</key>
+                <dict>
+                  <key>0</key>
+                  <dict>
+                    <key>name</key>
+                    <string>punctuation.definition.comment.cpp2</string>
+                  </dict>
+                </dict>
+                <key>end</key>
+                <string>(?=$)</string>
+              </dict>
+            </array>
           </dict>
         </array>
       </dict>

@@ -4,6 +4,7 @@ name: cpp2
 
 variables:
   identifier: '[_[:alpha:]][_[:alnum:]]*'
+  colon: ':[^:]'
 
 patterns:
 - include: '#comment'
@@ -17,7 +18,7 @@ repository:
 
   punctuation-colon:
     name: punctuation.separator.colon.cpp2
-    match: ':[^:]'
+    match: '{{colon}}'
 
   definition:
     name: meta.definition.cpp2
@@ -29,24 +30,47 @@ repository:
     begin: |
       (?x)
       ({{identifier}})\s*
-      (:[^:])
+      ({{colon}})\s*
     beginCaptures:
       "1": { name: entity.name.function.cpp2 }
+      "2": { name: punctuation.separator.colon.cpp2 }
     end: (?<=[\}\;])
     patterns:
     - include: '#function-type'
-    # - include: '#function-assignment'
+    - include: '#in-brackets-function-assignment'
+    - include: '#single-expression-function-assignment'
 
-  # function-assignment:
-  #   name: meta.function.assignment.cpp2
-  #   begin: |
-  #     (?x)
-  #     (=)\s*
-  #   beginCaptures:
-  #     "1": { name: keyword.operator.assignment.cpp2 }
-  #   end: (?<=[\}\;])
-  #   patterns:
-  #   - include: '#function-body'
+  single-expression-function-assignment:
+    name: meta.function.body.cpp2
+    begin: |
+      (?x)
+      (=)\s*
+    beginCaptures:
+      "1": { name: keyword.operator.assignment.cpp2 }
+    end: ';'
+    endCaptures:
+      "0": { name: punctuation.terminator.statement.cpp2 }
+    patterns:
+    - include: '#function-content'
+
+  in-brackets-function-assignment:
+    name: meta.function.body.cpp2
+    begin: |
+      (?x)
+      (=)\s*
+      (\{)
+    beginCaptures:
+      "1": { name: keyword.operator.assignment.cpp2 }
+      "2": { name: punctuation.curlybrace.open.cpp2 }
+    end: \}
+    endCaptures:
+      '0': { name: punctuation.curlybrace.close.cpp2 }
+    patterns:
+    - include: '#function-content'
+
+  function-content:
+    patterns:
+    - include: '#comment'
 
   # variable-definition:
   #   name: meta.variable-definition.cpp2
@@ -155,7 +179,7 @@ repository:
     begin: |
       (?x)
       (?=\()
-    end: (?=[=])
+    end: (?=[=;])
     patterns:
     - include: '#parenthesized-parameters'
     - include: '#function-return-type-seperator'
@@ -383,32 +407,30 @@ repository:
   #   patterns:
   #   - include: '#function-body'
 
-
-
-  # comment:
-  #   patterns:
-  #   - name: comment.block.cpp2
-  #     begin: /\*
-  #     beginCaptures:
-  #       '0': { name: punctuation.definition.comment.cpp2 }
-  #     end: \*/
-  #     endCaptures:
-  #       '0': { name: punctuation.definition.comment.cpp2 }
-  #   - begin: (^\s+)?(?=//)
-  #     beginCaptures:
-  #       '1': { name: punctuation.whitespace.comment.leading.cpp2 }
-  #     end: (?=$)
-  #     patterns:
-  #     - name: comment.block.documentation.cpp2
-  #       begin: (?<!/)///(?!/)
-  #       beginCaptures:
-  #         '0': { name: punctuation.definition.comment.cpp2 }
-  #       end: (?=$)
-  #     - name: comment.line.double-slash.cpp2
-  #       begin: (?<!/)//(?:(?!/)|(?=//))
-  #       beginCaptures:
-  #         '0': { name: punctuation.definition.comment.cpp2 }
-  #       end: (?=$)
+  comment:
+    patterns:
+    - name: comment.block.cpp2
+      begin: /\*
+      beginCaptures:
+        '0': { name: punctuation.definition.comment.cpp2 }
+      end: \*/
+      endCaptures:
+        '0': { name: punctuation.definition.comment.cpp2 }
+    - begin: (^\s+)?(?=//)
+      beginCaptures:
+        '1': { name: punctuation.whitespace.comment.leading.cpp2 }
+      end: (?=$)
+      patterns:
+      - name: comment.block.documentation.cpp2
+        begin: (?<!/)///(?!/)
+        beginCaptures:
+          '0': { name: punctuation.definition.comment.cpp2 }
+        end: (?=$)
+      - name: comment.line.double-slash.cpp2
+        begin: (?<!/)//(?:(?!/)|(?=//))
+        beginCaptures:
+          '0': { name: punctuation.definition.comment.cpp2 }
+        end: (?=$)
 
   # namespace-block:
   #   patterns:
@@ -442,17 +464,6 @@ repository:
   #   - include: '#parenthesized-parameters'
   #   - include: '#typing'
   #   - include: '#function-body'
-
-  # function-body:
-  #   name: meta.function.body.cpp2
-  #   begin: \{
-  #   beginCaptures:
-  #     '0': { name: punctuation.curlybrace.open.cpp2 }
-  #   end: \}
-  #   endCaptures:
-  #     '0': { name: punctuation.curlybrace.close.cpp2 }
-  #   patterns:
-  #   - include: '#comment'
 
   # return-statement:
   #   begin: \b(return)\b
