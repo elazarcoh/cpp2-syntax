@@ -404,6 +404,27 @@
           </dict>
         </array>
       </dict>
+      <key>binary-operator</key>
+      <dict>
+        <key>name</key>
+        <string>keyword.operator.binary.cpp2</string>
+        <key>match</key>
+        <string>+|-|\*|/|==|!=|&lt;=|&gt;=|&lt;|&gt;|&lt;&lt;|&gt;&gt;|&amp;&amp;|\|\||&amp;|\||\^|~|!|%|&amp;&amp;|\|\||\?|:</string>
+      </dict>
+      <key>binary-operation</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string/>
+          </dict>
+        </array>
+      </dict>
       <key>typing</key>
       <dict>
         <key>name</key>

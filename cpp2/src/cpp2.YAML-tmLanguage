@@ -155,6 +155,23 @@ repository:
     - include: '#comment'
     - include: '#statement'
 
+  binary-operator:
+    name: keyword.operator.binary.cpp2
+    # arithmetic
+    match: '+|-|\*|/|%'
+    # bitwise
+    match: '&|\||\^|~|<<|>>'
+    # comparison
+    match: '==|!=|<|>|<=|>='
+    # logical
+    match: '&&|\|\|'
+
+  binary-operation:
+    patterns:
+    - include: '#expression'
+    - include: '#binary-operator'
+    - include: '#expression'
+
   # variable-definition:
   #   name: meta.variable-definition.cpp2
   #   begin: '({{identifier}})\s*(:)'
