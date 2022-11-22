@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"name": "Root",
+			"path": "."
+		},
+		{
+			"path": "cpp2"
+		},
+		{
+			"path": "utils"
+		}
+	],
+	"settings": {
+		"filewatcher.commands": [
+			{
+				"match": "cpp2.YAML-tmLanguage",
+				"cmd": "cd ${workspaceRoot} && yarn workspace cpp2 run build",
+				"event": "onFileChange",
+				"isAsync": true,
+			}
+		],
+	}
+}

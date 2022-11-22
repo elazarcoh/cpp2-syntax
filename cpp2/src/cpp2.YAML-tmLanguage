@@ -1,0 +1,631 @@
+---
+"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json"
+name: cpp2
+
+variables:
+  identifier: '[_[:alpha:]][_[:alnum:]]*'
+
+patterns:
+- include: '#comment'
+- include: '#function-definition'
+- include: '#type-name'
+
+repository:
+  punctuation-comma:
+    name: punctuation.separator.comma.cpp2
+    match: ','
+
+  punctuation-colon:
+    name: punctuation.separator.colon.cpp2
+    match: ':[^:]'
+
+  definition:
+    name: meta.definition.cpp2
+    patterns:
+    - include: '#function-definition'
+
+  function-definition:
+    name: meta.definition.function.cpp2
+    begin: |
+      (?x)
+      ({{identifier}})\s*
+      (:[^:])
+    beginCaptures:
+      "1": { name: entity.name.function.cpp2 }
+    end: (?<=[\}\;])
+    patterns:
+    - include: '#function-type'
+    # - include: '#function-assignment'
+
+  # function-assignment:
+  #   name: meta.function.assignment.cpp2
+  #   begin: |
+  #     (?x)
+  #     (=)\s*
+  #   beginCaptures:
+  #     "1": { name: keyword.operator.assignment.cpp2 }
+  #   end: (?<=[\}\;])
+  #   patterns:
+  #   - include: '#function-body'
+
+  # variable-definition:
+  #   name: meta.variable-definition.cpp2
+  #   begin: '({{identifier}})\s*(:)'
+  #   beginCaptures:
+  #     1: { name: variable.other.cpp2 }
+  #     2: { name: punctuation.separator.colon.cpp2 }
+  #   end: ';'
+  #   patterns:
+  #   - include: '#type'
+  #   - include: '#assignment-expression'
+  
+  # assignment-expression:
+  #   name: meta.assignment-expression.cpp2
+  #   begin: '='
+  #   beginCaptures:
+  #     0: { name: keyword.operator.assignment.cpp2 }
+  #   end: ';'
+  #   patterns:
+  #   - include: '#expression'
+
+  # using-directive:
+  #   patterns:
+  #   - begin: \b(using)\b\s+
+  #     beginCaptures:
+  #       '1': { name: keyword.other.using.cpp2 }
+  #     end: (?=;)
+  #     patterns:
+  #     - include: '#type'
+    
+  # typing:
+  #   name: meta.typing.cpp2
+  #   begin: (?:(:)\s*)
+  #   beginCaptures:
+  #     '1': { name: punctuation.separator.colon.cpp2 }
+  #   end: (?=[\{\}\n;,])
+  #   patterns:
+  #   - include: '#type'
+
+  type:
+    name: meta.type.cpp2
+    patterns:
+    - include: '#function-type'
+  #   - include: '#array-type'
+  #   - include: '#unpacked'
+  #   - include: '#unit-type'
+  #   - include: '#type-builtin'
+    - include: '#type-name'
+  #   - include: '#enum-name'
+
+  # unpacked:
+  #   name: meta.unpacked.cpp2
+  #   match: ({{identifier}})(\.\.\.)
+  #   captures:
+  #     '1': 
+  #       patterns: 
+  #       - include: '#type'
+  #     '2': {name: punctuation.operator.unpack.cpp2}
+
+  # unit-type:
+  #   name: 'meta.unit.cpp2'
+  #   match: \(\)
+
+  # type-builtin:
+  #   match: \b(string|bool|i8|u8|i16|u16|i32|u32|i64|u64|f32|f64)\b
+  #   captures:
+  #     '1':
+  #       name: keyword.type.cpp2
+
+  # enum-name:
+  #   name: entity.name.type.enum.cpp2
+  #   match: '{{identifier}}'
+
+  type-name:
+    patterns:
+    - match: ({{identifier}})\s*(::)
+      captures:
+        '1': { name: entity.name.namespace.cpp2 }
+        '2': { name: punctuation.static-accessor.cpp2 }
+    - match: (::)\s*({{identifier}})
+      captures:
+        '1': { name: punctuation.static-accessor.cpp2 }
+        '2': { name: entity.name.type.cpp2 }
+    - name: entity.name.type.cpp2
+      match: '{{identifier}}'
+
+  # enum-name:
+  #   name: entity.name.type.enum.cpp2
+  #   match: '{{identifier}}'
+
+  # array-type:
+  #   name: meta.array.cpp2
+  #   match: ({{identifier}})(\[\])
+  #   captures:
+  #     '1': 
+  #       patterns: 
+  #       - include: '#type'
+  #     '2': {name: punctuation.definition.array.cpp2}
+
+  function-return-type-seperator:
+    name: punctuation.separator.function-return-type.cpp2
+    match: '->'
+
+  function-type:
+    name: meta.function-type.cpp2
+    begin: |
+      (?x)
+      (?=\()
+    end: (?=[=])
+    patterns:
+    - include: '#parenthesized-parameters'
+    - include: '#function-return-type-seperator'
+    - include: '#type'
+  
+  # parameter:
+  #   name: meta.parameter.cpp2
+  #   begin: |
+  #     (?x)
+  #     ({{identifier}})\s*
+  #     (:)\s*
+  #   beginCaptures:
+  #     "1": { name: variable.parameter.cpp2 }
+  #     "2": { name: punctuation.separator.colon.cpp2 }
+  #   end: (?=[\)\,])
+  #   patterns:
+  #   - include: '#typing'
+  
+  parameter-modifier:
+    name: storage.modifier.cpp2
+    match: \b(in|out|inout|copy|move|forward)\b
+
+  parameter-name:
+    match: |
+      (?x)
+      ({{identifier}})
+    captures:
+      '1': { name: entity.name.variable.parameter.cpp2 }
+
+  parameter:
+    name: meta.parameter.cpp2
+    begin: |
+      (?x)
+      (?:(\w+)?\s+)?
+      ({{identifier}})\s*
+      (:)\s*
+    beginCaptures:
+      "1":  
+        patterns:
+        - include: '#parameter-modifier'
+      "2":
+        patterns:
+        - include: '#parameter-name'
+      "3": 
+        name: punctuation.separator.colon.cpp2
+    end: (?=[\)\,])
+    patterns: 
+    - include: '#type-name'
+
+  parenthesized-parameters:
+    name: meta.function.parameters.cpp2
+    begin: \(
+    beginCaptures:
+      '0': {name: punctuation.definition.parameters.begin.cpp2}
+    end: \)
+    endCaptures:
+      '0': {name: punctuation.definition.parameters.end.cpp2}
+    patterns:
+    - include: '#comment'
+    - include: '#parameter'
+    - include: '#punctuation-comma'
+
+  # identifier:
+  #   name: 'meta.identifier.cpp2'
+  #   match: '{{identifier}}'
+
+  # literal:
+  #   patterns:
+  #   - include: '#boolean-literal'
+  #   - include: '#numeric-literal'
+
+  # expression:
+  #   patterns:
+  #   # - include: '#function-expression'
+  #   # - include: "#function-call"
+  #   # - include: '#expression-operators'
+  #   # - include: '#literal'
+  #   - include: '#identifier'
+    
+  # expression-operators:
+  #   patterns:
+  #   - match: \+|-|\*|\/|\%
+  #     name: keyword.operator.arithmetic.cpp2
+
+  # struct-definition:
+  #   name: meta.struct.cpp2
+  #   begin: \{
+  #   beginCaptures:
+  #     '0': { name: punctuation.definition.struct.open.cpp2 }
+  #   end: \}
+  #   endCaptures:
+  #     '0': { name: punctuation.definition.struct.close.cpp2 }
+  #   patterns:
+  #     - include: '#comment'
+  #     - include: '#struct-field'
+
+  # struct-field:
+  #   begin: ({{identifier}})
+  #   end: (,)|(?=\})
+  #   beginCaptures:
+  #     '1': { name: entity.name.variable.property.cpp2 }
+  #   endCaptures:
+  #     '1': { name: punctuation.separator.comma.cpp2 }
+  #   patterns:
+  #     - include: '#comment'
+  #     - include: '#punctuation-comma'
+  #     - include: '#typing'
+  #     - include: '#struct-field'
+
+  # enum-declaration:
+  #   name: meta.enum.cpp2
+  #   begin: \b(enum)\b\s+
+  #   beginCaptures:
+  #     '1': { name: keyword.other.enum.cpp2 }
+  #   end: (?<=\})
+  #   patterns:
+  #   - include: '#enum-name'
+  #   - begin: \{
+  #     beginCaptures:
+  #       '0': { name: punctuation.definition.enum.open.cpp2 }
+  #     end: \}
+  #     endCaptures:
+  #       '0': { name: punctuation.definition.enum.open.cpp2 }
+  #     patterns:
+  #     - include: '#comment'
+  #     - begin: ({{identifier}})
+  #       beginCaptures:
+  #         '1': { name: variable.other.enummember.cpp2 }
+  #       end: (?=[,\n\}])
+  #       patterns:
+  #       - include: '#struct-definition'
+
+  # class-declaration:
+  #   begin: (?=\b(?:\bstatic\s+)?class\b)
+  #   end: (?<=\})
+  #   patterns:
+  #   - begin: |
+  #       (?x)
+  #       (?:\b(static)\s+)?
+  #       \b(class)\b\s+ 
+  #       (?<name>{{identifier}})\s*
+  #       (?:\(\s*(?<metaclass>{{identifier}})\s*\))?
+  #     beginCaptures:
+  #       '1': { name: storage.modifier.class.cpp2 }
+  #       '2': { name: keyword.other.class.cpp2 }
+  #       '3': { name: entity.name.class.cpp2 }
+  #       '4':  
+  #         name: entity.name.meta-class.cpp2
+  #         patterns: 
+  #         - include: '#type-name'
+  #     end: (?=\{)
+  #     patterns:
+  #     - include: '#comment'
+  #     - include: '#base-types'
+  #   - include: '#class-body'
+    
+  # base-types:
+  #   name: meta.base-types.cpp2
+  #   begin: ':'
+  #   beginCaptures:
+  #     '0': { name: punctuation.separator.colon.cpp2 }
+  #   end: (?=\{)
+  #   patterns:
+  #   - include: '#type-name'
+  #   - include: '#punctuation-comma'
+
+  # class-body:
+  #   name: meta.class.body.cpp2
+  #   begin: \{
+  #   beginCaptures:
+  #     '0': { name: punctuation.curlybrace.open.cpp2 }
+  #   end: \}
+  #   endCaptures:
+  #     '0': { name: punctuation.curlybrace.close.cpp2 }
+  #   patterns:
+  #   - include: '#comment'
+  #   - include: '#class-member'
+  
+  # class-member:
+  #   patterns:
+  #   - include: '#function-declaration'
+  #   - include: '#property-declaration'
+  #   - include: '#field-declaration'
+
+  # field-declaration:
+  #   begin: ({{identifier}})\s*(?=:)
+  #   beginCaptures:
+  #     '1': { name: entity.name.variable.property.cpp2 }
+  #   end: (?<=\;)  
+  #   patterns:
+  #   - include: '#typing'
+
+  # property-declaration:
+  #   begin: ({{identifier}})\s*(?=:.*?\{)
+  #   beginCaptures:
+  #     '1': { name: entity.name.variable.property.cpp2 }
+  #   end: (?<=\})  
+  #   patterns:
+  #   - include: '#typing'
+  #   - comment: property-body
+  #     begin: \{
+  #     beginCaptures:
+  #       '0': { name: punctuation.curlybrace.open.cpp2 }
+  #     end: \}
+  #     endCaptures:
+  #       '0': { name: punctuation.curlybrace.close.cpp2 }
+  #     patterns:
+  #     - include: '#comment'
+  #     - include: '#get-property'
+  #     - include: '#set-property'
+  
+  # get-property:
+  #   begin: \b(get)\b
+  #   beginCaptures:
+  #     '1': { name: keyword.other.get.cpp2 }
+  #   end: (?<=\})  
+  #   patterns:
+  #   - include: '#function-body'
+
+  # set-property:
+  #   begin: \b(set)\b
+  #   beginCaptures:
+  #     '1': { name: keyword.other.set.cpp2 }
+  #   end: (?<=\})  
+  #   patterns:
+  #   - include: '#function-body'
+
+
+
+  # comment:
+  #   patterns:
+  #   - name: comment.block.cpp2
+  #     begin: /\*
+  #     beginCaptures:
+  #       '0': { name: punctuation.definition.comment.cpp2 }
+  #     end: \*/
+  #     endCaptures:
+  #       '0': { name: punctuation.definition.comment.cpp2 }
+  #   - begin: (^\s+)?(?=//)
+  #     beginCaptures:
+  #       '1': { name: punctuation.whitespace.comment.leading.cpp2 }
+  #     end: (?=$)
+  #     patterns:
+  #     - name: comment.block.documentation.cpp2
+  #       begin: (?<!/)///(?!/)
+  #       beginCaptures:
+  #         '0': { name: punctuation.definition.comment.cpp2 }
+  #       end: (?=$)
+  #     - name: comment.line.double-slash.cpp2
+  #       begin: (?<!/)//(?:(?!/)|(?=//))
+  #       beginCaptures:
+  #         '0': { name: punctuation.definition.comment.cpp2 }
+  #       end: (?=$)
+
+  # namespace-block:
+  #   patterns:
+  #   - include: "#function-declaration"
+
+  # keywords:
+  #   patterns:
+  #   - name: keyword.control.flow.cpp2
+  #     match: \b(if|while|for|return)\b
+
+  # function-modifier:
+  #   name: storage.modifier.function.cpp2
+  #   match: (?<!\.)\b(public|protected|private|static|__entrypoint)\b
+  
+ 
+
+  # function-declaration:
+  #   begin: |
+  #     (?x)
+  #     ((?:\s*{{identifier}}\s+)*)
+  #     \s*(func)\s+
+  #     ({{identifier}})
+  #   beginCaptures:
+  #     "1": 
+  #       patterns:
+  #         - include: '#function-modifier'
+  #     "2": { name: storage.modifier.cpp2 }
+  #     '3': { name: entity.name.function.cpp2 }
+  #   end: (?<=\})
+  #   patterns:
+  #   - include: '#parenthesized-parameters'
+  #   - include: '#typing'
+  #   - include: '#function-body'
+
+  # function-body:
+  #   name: meta.function.body.cpp2
+  #   begin: \{
+  #   beginCaptures:
+  #     '0': { name: punctuation.curlybrace.open.cpp2 }
+  #   end: \}
+  #   endCaptures:
+  #     '0': { name: punctuation.curlybrace.close.cpp2 }
+  #   patterns:
+  #   - include: '#comment'
+
+  # return-statement:
+  #   begin: \b(return)\b
+  #   beginCaptures:
+  #     '1': { name: keyword.control.flow.return.cpp2 }
+  #   end: (?=[;\n])
+  #   patterns:
+  #   - include: '#expression'
+
+  # function-call:
+  #   name: meta.function-call.cpp2
+  #   begin: |
+  #     (?x)
+  #       \b(?=
+  #         ({{identifier}}) \s* (\()
+  #       )
+  #   end: (?<=\))
+  #   endCaptures:
+  #     '0': {name: punctuation.definition.arguments.end.cpp2}
+  #   patterns:
+  #     - include: '#function-name'
+  #     - include: '#function-arguments'
+
+  # function-name:
+  #   patterns:
+  #     - match: |
+  #         (?x)
+  #           \b ({{identifier}}) \b
+  #       captures:
+  #         '1': { name: entity.name.function.cpp2 }
+
+  # function-arguments:
+  #   name: meta.function.arguments.cpp2
+  #   begin: \(
+  #   beginCaptures:
+  #     '0': {name: punctuation.definition.arguments.begin.cpp2}
+  #   end: \)
+  #   endCaptures:
+  #     '0': {name: punctuation.definition.arguments.end.cpp2}
+  #   patterns:
+  #   - include: '#comment'
+  #   - include: '#expression'
+  #   - include: '#punctuation-comma'
+
+
+  # boolean-literal:
+  #   name: constant.language.boolean.cpp2
+  #   match: \b(true|false)\b
+
+  # numeric-literal:
+  #   comment: TODO taken from C# as is. Need to modify.
+  #   match: "(?<!\\w)\\.?\\d(?:(?:[0-9a-zA-Z_\\.]|_)|(?<=[eE])[+-])*"
+  #   captures:
+  #     '0':
+  #       patterns:
+  #       - begin: "(?=.)"
+  #         end: "$"
+  #         patterns:
+  #         # Decimal number (with optional thousands separator) with mandatory decimal part (with optional thousands separator) and optional exponent (also with optional thousands separator)
+  #         - match: "(\\G(?=[0-9.])(?!0[xXbB]))([0-9](?:[0-9]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)?((?:(?<=[0-9])|\\.(?=[0-9])))([0-9](?:[0-9]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)?((?<!_)([eE])(\\+?)(\\-?)((?:[0-9](?:[0-9]|(?:(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)))?([fFdDmM](?!\\w))?$"
+  #           captures:
+  #             '2':
+  #               name: constant.numeric.decimal.cpp2
+  #               patterns:
+  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+  #                 name: constant.numeric.other.separator.thousands.cpp2
+  #             '3':
+  #               name: constant.numeric.other.separator.thousands.cpp2
+  #             '4':
+  #               name: constant.numeric.other.separator.decimals.cpp2
+  #             '5':
+  #               name: constant.numeric.decimal.cpp2
+  #               patterns:
+  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+  #                 name: constant.numeric.other.separator.thousands.cpp2
+  #             '6':
+  #               name: constant.numeric.other.separator.thousands.cpp2
+  #             '8':
+  #               name: constant.numeric.other.exponent.cpp2
+  #             '9':
+  #               name: keyword.operator.arithmetic.cpp2
+  #             '10':
+  #               name: keyword.operator.arithmetic.cpp2
+  #             '11':
+  #               name: constant.numeric.decimal.cpp2
+  #               patterns:
+  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+  #                 name: constant.numeric.other.separator.thousands.cpp2
+  #             '12':
+  #               name: constant.numeric.other.suffix.cpp2
+  #         # Binary number (with optional thousands separator)
+  #         - match: "(\\G0[bB])([01_](?:[01_]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\\w))?$"
+  #           captures:
+  #             '1':
+  #               name: constant.numeric.other.preffix.binary.cpp2
+  #             '2':
+  #               name: constant.numeric.binary.cpp2
+  #               patterns:
+  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+  #                 name: constant.numeric.other.separator.thousands.cpp2
+  #             '3':
+  #               name: constant.numeric.other.separator.thousands.cpp2
+  #             '4':
+  #               name: constant.numeric.other.suffix.cpp2
+  #         # Hexadecimal number (with optional thousands separator)
+  #         - match: "(\\G0[xX])([0-9a-fA-F](?:[0-9a-fA-F]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\\w))?$"
+  #           captures:
+  #             '1':
+  #               name: constant.numeric.other.preffix.hex.cpp2
+  #             '2':
+  #               name: constant.numeric.hex.cpp2
+  #               patterns:
+  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+  #                 name: constant.numeric.other.separator.thousands.cpp2
+  #             '3':
+  #               name: constant.numeric.other.separator.thousands.cpp2
+  #             '4':
+  #               name: constant.numeric.other.suffix.cpp2
+  #         # Integral number (with optional thousands separator) with no decimal part and optional exponent (also with optional thousands separator)
+  #         - match: "(\\G(?=[0-9.])(?!0[xXbB]))([0-9](?:[0-9]|((?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)((?<!_)([eE])(\\+?)(\\-?)((?:[0-9](?:[0-9]|(?:(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])))*)))?((?:(?:(?:(?:(?:[uU]|[uU]l)|[uU]L)|l[uU]?)|L[uU]?)|[fFdDmM])(?!\\w))?$"
+  #           captures:
+  #             '2':
+  #               name: constant.numeric.decimal.cpp2
+  #               patterns:
+  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+  #                 name: constant.numeric.other.separator.thousands.cpp2
+  #             '3':
+  #               name: constant.numeric.other.separator.thousands.cpp2
+  #             '5':
+  #               name: constant.numeric.other.exponent.cpp2
+  #             '6':
+  #               name: keyword.operator.arithmetic.cpp2
+  #             '7':
+  #               name: keyword.operator.arithmetic.cpp2
+  #             '8':
+  #               name: constant.numeric.decimal.cpp2
+  #               patterns:
+  #               - match: "(?<=[0-9a-fA-F])_(?=[0-9a-fA-F])"
+  #                 name: constant.numeric.other.separator.thousands.cpp2
+  #             '9':
+  #               name: constant.numeric.other.suffix.cpp2
+  #         # Capture the rest as an invalid numeric literal
+  #         - match: "(?:(?:[0-9a-zA-Z_\\.]|_)|(?<=[eE])[+-])+"
+  #           name: invalid.illegal.constant.numeric.cpp2
+
+  # strings:
+  #   name: string.quoted.double.cpp2
+  #   begin: "\""
+  #   end: "\""
+  #   patterns:
+  #   - name: constant.character.escape.cpp2
+  #     match: "\\\\."
+
+  # template-definition:
+    # begin: (?<!\w)(template)(?:(?:\s)+)?(<)
+    # end: '>'
+    # beginCaptures:
+    #   1:
+    #     name: storage.type.template.cpp2
+    #   2:
+    #     name: punctuation.section.angle-brackets.start.template.definition.cpp2
+    # endCaptures:
+    #   0:
+    #     name: punctuation.section.angle-brackets.end.template.definition.cpp2
+    # name: meta.template.definition.cpp2
+    # patterns:
+    #   - begin: (?<=\w)(?:(?:\s)+)?<
+    #     end: '>'
+    #     beginCaptures:
+    #       0:
+    #         name: punctuation.section.angle-brackets.begin.template.call.cpp2
+    #     endCaptures:
+    #       0:
+    #         name: punctuation.section.angle-brackets.begin.template.call.cpp2
+
+scopeName: source.cpp2
