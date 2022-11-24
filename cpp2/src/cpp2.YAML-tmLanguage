@@ -31,11 +31,14 @@ repository:
   expression:
     name: meta.expression.cpp2
     patterns:
+    - include: '#inspect'
     - include: '#unnamed-function'
     - include: '#string'
+    - include: '#character'
     - include: '#numeric-literal'
     - include: '#boolean-literal'
     - include: '#operators'
+    - include: '#new'
     - include: '#function-call'
     - include: '#variable-definition-typed'
     - include: '#variable-name'
@@ -59,7 +62,6 @@ repository:
     - include: '#next'
     - include: '#for'
     - include: '#do'
-    - include: '#delete'
     - include: '#expression'
 
   namespace-access:
@@ -246,29 +248,90 @@ repository:
     - include: '#expression'
     - include: '#unnamed-function'
 
-  delete:
-    begin: \b(delete)\b
+  new:
+    name: meta.control.new.cpp2
+    patterns:
+      - match: \b(new)\.(unique)\b
+        captures:
+          "1": { name: keyword.control.new.cpp2 }
+          "2": { name: keyword.control.new.unique.cpp2 }
+      - match: \b(new)\.(shared)\b
+        captures:
+          "1": { name: keyword.control.new.cpp2 }
+          "2": { name: keyword.control.new.shared.cpp2 }
+      - match: \b(new)\b
+        captures:
+          "1": { name: keyword.control.new.cpp2 }
+      - match: \b(gc)\.(new)\b
+        captures:
+          "1": { name: keyword.control.gc.cpp2 }
+          "2": { name: keyword.control.new.cpp2 }
+      - match: \b(delete)\b
+        captures:
+          "1": { name: keyword.control.delete.cpp2 }
+
+  inspect:
+    name: meta.control.inspect.cpp2
+    begin: |
+      (?x)
+      \b(inspect)\b\s*
+      {{namespaced_identifier}}\s*
+      (->)\s*
+      {{namespaced_identifier}}
     beginCaptures:
-      "1": { name: keyword.control.delete.cpp2 }
-    end: ';'
+      "1": { name: keyword.control.inspect.cpp2 }
+      "2": 
+        patterns: 
+        - include: '#namespace-access'
+      "3": { name: entity.name.variable.cpp2 }
+      "4": { name: keyword.operator.cpp2 }
+      "5": 
+        patterns: 
+        - include: '#namespace-access'
+      "6": { name: entity.name.type.cpp2 }
+    end: (?<=[\}])
+    patterns:
+    - include: '#inspect-block'
+  
+  inspect-block:
+    begin: (\{)
+    beginCaptures:
+      "1": { name: punctuation.curlybrace.open.cpp2 }
+    end: (\})
+    endCaptures:
+      "1": { name: punctuation.curlybrace.close.cpp2 }
+    patterns:
+    - include: '#is'
+
+  is:
+    name: meta.control.inspect.is.cpp2
+    begin: |
+      (?x)
+      \b(is)\b\s*
+      ({{namespaced_typename}})\s*
+      (=)
+    beginCaptures:
+      "1": { name: keyword.control.inspect.is.cpp2 }
+      "2": 
+        patterns: 
+        - include: '#namespace-access-type'
+      "4": { name: keyword.operator.cpp2 }
+    end: (?=[;])
     patterns:
     - include: '#expression'
 
-  # using-directive:
-  #   patterns:
-  #   - begin: \b(using)\b\s+
-  #     beginCaptures:
-  #       '1': { name: keyword.other.using.cpp2 }
-  #     end: (?=;)
-  #     patterns:
-  #     - include: '#type'
-    
-  typing:
-    name: meta.typing.cpp2
-    begin: (?<={{colon}})\s*
-    end: (?=\s*(?=[=;]))
-    patterns:
-    - include: '#type'   
+  as-operator:
+    name: meta.operator.as.cpp2
+    match: |
+      (?x)
+      \b(as)\b\s*
+      {{namespaced_identifier}}\s*
+    captures:
+      "1": { name: keyword.control.operator.as.cpp2 }
+      "2": 
+        patterns: 
+        - include: '#namespace-access'
+      "3": { name: entity.name.type.cpp2 }
 
   function-typing:
     name: meta.typing.cpp2
@@ -300,6 +363,13 @@ repository:
   #   captures:
   #     '1':
   #       name: keyword.type.cpp2
+
+  typing:
+    name: meta.typing.cpp2
+    begin: (?<={{colon}})\s*
+    end: (?=\s*(?=[=;]))
+    patterns:
+    - include: '#type'   
 
   type-name:
     patterns:
@@ -562,6 +632,13 @@ repository:
     name: string.quoted.double.cpp2
     begin: "\""
     end: "\""
+    patterns:
+    - name: constant.character.escape.cpp2
+      match: "\\\\."
+  character:
+    name: string.quoted.single.cpp2
+    begin: "'"
+    end: "'"
     patterns:
     - name: constant.character.escape.cpp2
       match: "\\\\."
