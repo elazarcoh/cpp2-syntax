@@ -86,7 +86,7 @@ repository:
       "1": 
         patterns: 
         - include: '#namespace-access'
-      "2": { name: entity.name.variable.cpp2 }
+      "2": { name: entity.name.variable.declaration.cpp2 }
       "3": { name: punctuation.separator.colon.cpp2 }
     end: (?<=;)
     patterns:
@@ -113,7 +113,7 @@ repository:
       ({{identifier}})\s*
       ({{colon}})\s*
     beginCaptures:
-      "1": { name: entity.name.function.cpp2 }
+      "1": { name: entity.name.function.declaration.cpp2 }
       "2": { name: punctuation.separator.colon.cpp2 }
     end: (?<=[=])
     patterns:

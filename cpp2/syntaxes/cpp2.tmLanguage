@@ -222,7 +222,7 @@
           <key>2</key>
           <dict>
             <key>name</key>
-            <string>entity.name.variable.cpp2</string>
+            <string>entity.name.variable.declaration.cpp2</string>
           </dict>
           <key>3</key>
           <dict>
@@ -292,7 +292,7 @@
           <key>1</key>
           <dict>
             <key>name</key>
-            <string>entity.name.function.cpp2</string>
+            <string>entity.name.function.declaration.cpp2</string>
           </dict>
           <key>2</key>
           <dict>
