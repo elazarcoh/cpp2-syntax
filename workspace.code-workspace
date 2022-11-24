@@ -15,7 +15,7 @@
 		"filewatcher.commands": [
 			{
 				"match": "cpp2.YAML-tmLanguage",
-				"cmd": "cd ${workspaceRoot} && yarn workspace cpp2 run build",
+				"cmd": "yarn --cwd \"${workspaceRoot}\" workspace cpp2-syntax run build",
 				"event": "onFileChange",
 				"isAsync": true,
 			}
