@@ -5,7 +5,7 @@
         "utils"
     ],
     "scripts": {
-        "build": "yarn workspace utils run build && yarn workspace cpp2 run build",
-        "package": "yarn workspace cpp2 run package"
+        "build": "yarn workspace utils run build && yarn workspace cpp2-syntax run build",
+        "package": "yarn workspace cpp2-syntax run package"
     }
 }
