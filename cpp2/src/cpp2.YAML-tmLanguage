@@ -31,6 +31,7 @@ repository:
   expression:
     name: meta.expression.cpp2
     patterns:
+    - include: '#unnamed-function'
     - include: '#string'
     - include: '#numeric-literal'
     - include: '#boolean-literal'
@@ -54,6 +55,10 @@ repository:
     - include: '#return-statement'
     - include: '#if'
     - include: '#else'
+    - include: '#while'
+    - include: '#next'
+    - include: '#for'
+    - include: '#do'
     - include: '#delete'
     - include: '#expression'
 
@@ -110,14 +115,24 @@ repository:
     name: meta.definition.function.cpp2
     begin: |
       (?x)
-      ({{identifier}})\s*
-      ({{colon}})\s*
+      ({{identifier}})
+      (?=\s*[:]\s*[\(])
     beginCaptures:
       "1": { name: entity.name.function.declaration.cpp2 }
-      "2": { name: punctuation.separator.colon.cpp2 }
     end: (?<=[=])
     patterns:
     - include: '#function-typing'
+
+  unnamed-function:
+    name: meta.definition.unnamed-function.cpp2
+    begin: (:)(?=[\s\(])
+    beginCaptures:
+      "1": { name: punctuation.separator.colon.cpp2 }
+    end: (?<=[\};])
+    patterns:
+    - include: '#function-type'
+    - include: '#scoped-code-block'
+    - include: '#expression'
 
   scoped-code-block:
     begin: (\{)
@@ -136,7 +151,7 @@ repository:
     - include: '#scoped-code-block'
 
   binary-operator:
-    name: keyword.operator.binary.cpp2
+    name: keyword.operator.cpp2
     match: |
       (?x)
       (
@@ -151,7 +166,7 @@ repository:
       )
 
   unary-operator:
-    name: keyword.operator.unary.cpp2
+    name: keyword.operator.cpp2
     match: |
       (?x)
       (?<={{namespaced_identifier}})
@@ -179,6 +194,7 @@ repository:
     - include: '#square-brackets-operator'
 
   if:
+    name: meta.control.if.cpp2
     begin: \b(if)\b
     beginCaptures:
       "1": { name: keyword.control.if.cpp2 }
@@ -187,10 +203,48 @@ repository:
     - include: '#expression'
   
   else:
+    name: meta.control.else.cpp2
     begin: \b(else)\b
     beginCaptures:
       "1": { name: keyword.control.else.cpp2 }
     end: (?=[\{])
+
+  while:
+    name: meta.control.while.cpp2
+    begin: \b(while)\b
+    beginCaptures:
+      "1": { name: keyword.control.while.cpp2 }
+    end: (?=[\{;]|next)
+    patterns:
+    - include: '#expression'
+
+  next:
+    name: meta.control.next.cpp2
+    begin: \b(next)\b
+    beginCaptures:
+      "1": { name: keyword.control.next.cpp2 }
+    end: (?=[\{;])
+    patterns:
+    - include: '#expression'
+  
+  do:
+    name: meta.control.do.cpp2
+    begin: \b(do)\b
+    beginCaptures:
+      "1": { name: keyword.control.do.cpp2 }
+    end: (?=[\{])
+
+  for:
+    name: meta.control.for.cpp2
+    begin: \b(for)\b
+    beginCaptures:
+      "1": { name: keyword.control.for.cpp2 }
+    end: (?=[\}])
+    patterns:
+    - match: \b(do)\b
+      name: keyword.control.do.cpp2
+    - include: '#expression'
+    - include: '#unnamed-function'
 
   delete:
     begin: \b(delete)\b
@@ -199,26 +253,6 @@ repository:
     end: ';'
     patterns:
     - include: '#expression'
-
-  # variable-definition:
-  #   name: meta.variable-definition.cpp2
-  #   begin: '({{identifier}})\s*(:)'
-  #   beginCaptures:
-  #     1: { name: variable.other.cpp2 }
-  #     2: { name: punctuation.separator.colon.cpp2 }
-  #   end: ';'
-  #   patterns:
-  #   - include: '#type'
-  #   - include: '#assignment-expression'
-  
-  # assignment-expression:
-  #   name: meta.assignment-expression.cpp2
-  #   begin: '='
-  #   beginCaptures:
-  #     0: { name: keyword.operator.assignment.cpp2 }
-  #   end: ';'
-  #   patterns:
-  #   - include: '#expression'
 
   # using-directive:
   #   patterns:
@@ -238,7 +272,9 @@ repository:
 
   function-typing:
     name: meta.typing.cpp2
-    begin: (?<={{colon}})\s*
+    begin: (:)(?=[\s\(])
+    beginCaptures:
+      "1": { name: punctuation.separator.colon.cpp2 }
     end: (?=\s*(?=[=;]))
     patterns:
     - include: '#function-type'
@@ -247,9 +283,6 @@ repository:
     name: meta.type.cpp2
     patterns:
     - include: '#function-type'
-  #   - include: '#array-type'
-  #   - include: '#unpacked'
-  #   - include: '#unit-type'
   #   - include: '#type-builtin'
     - include: '#type-name'
     - include: '#pointer-type'
@@ -262,28 +295,11 @@ repository:
     patterns:
     - include: '#type'
 
-  # unpacked:
-  #   name: meta.unpacked.cpp2
-  #   match: ({{identifier}})(\.\.\.)
-  #   captures:
-  #     '1': 
-  #       patterns: 
-  #       - include: '#type'
-  #     '2': {name: punctuation.operator.unpack.cpp2}
-
-  # unit-type:
-  #   name: 'meta.unit.cpp2'
-  #   match: \(\)
-
   # type-builtin:
   #   match: \b(string|bool|i8|u8|i16|u16|i32|u32|i64|u64|f32|f64)\b
   #   captures:
   #     '1':
   #       name: keyword.type.cpp2
-
-  # enum-name:
-  #   name: entity.name.type.enum.cpp2
-  #   match: '{{identifier}}'
 
   type-name:
     patterns:
@@ -298,20 +314,7 @@ repository:
     - name: entity.name.type.cpp2
       match: '{{identifier}}'
 
-  # enum-name:
-  #   name: entity.name.type.enum.cpp2
-  #   match: '{{identifier}}'
-
-  # array-type:
-  #   name: meta.array.cpp2
-  #   match: ({{identifier}})(\[\])
-  #   captures:
-  #     '1': 
-  #       patterns: 
-  #       - include: '#type'
-  #     '2': {name: punctuation.definition.array.cpp2}
-
-  function-return-type-seperator:
+  function-return-type-separator:
     name: punctuation.separator.function-return-type.cpp2
     match: '->'
 
@@ -323,21 +326,8 @@ repository:
     end: (?=[=;])
     patterns:
     - include: '#parenthesized-parameters'
-    - include: '#function-return-type-seperator'
+    - include: '#function-return-type-separator'
     - include: '#type'
-  
-  # parameter:
-  #   name: meta.parameter.cpp2
-  #   begin: |
-  #     (?x)
-  #     ({{identifier}})\s*
-  #     (:)\s*
-  #   beginCaptures:
-  #     "1": { name: variable.parameter.cpp2 }
-  #     "2": { name: punctuation.separator.colon.cpp2 }
-  #   end: (?=[\)\,])
-  #   patterns:
-  #   - include: '#typing'
   
   parameter-modifier:
     name: storage.modifier.cpp2
@@ -383,53 +373,6 @@ repository:
     - include: '#parameter'
     - include: '#punctuation-comma'
 
-  # identifier:
-  #   name: 'meta.identifier.cpp2'
-  #   match: '{{identifier}}'
-
-  # literal:
-  #   patterns:
-  #   - include: '#boolean-literal'
-  #   - include: '#numeric-literal'
-
-  # expression:
-  #   patterns:
-  #   # - include: '#function-expression'
-  #   # - include: "#function-call"
-  #   # - include: '#expression-operators'
-  #   # - include: '#literal'
-  #   - include: '#identifier'
-    
-  # expression-operators:
-  #   patterns:
-  #   - match: \+|-|\*|\/|\%
-  #     name: keyword.operator.arithmetic.cpp2
-
-  # struct-definition:
-  #   name: meta.struct.cpp2
-  #   begin: \{
-  #   beginCaptures:
-  #     '0': { name: punctuation.definition.struct.open.cpp2 }
-  #   end: \}
-  #   endCaptures:
-  #     '0': { name: punctuation.definition.struct.close.cpp2 }
-  #   patterns:
-  #     - include: '#comment'
-  #     - include: '#struct-field'
-
-  # struct-field:
-  #   begin: ({{identifier}})
-  #   end: (,)|(?=\})
-  #   beginCaptures:
-  #     '1': { name: entity.name.variable.property.cpp2 }
-  #   endCaptures:
-  #     '1': { name: punctuation.separator.comma.cpp2 }
-  #   patterns:
-  #     - include: '#comment'
-  #     - include: '#punctuation-comma'
-  #     - include: '#typing'
-  #     - include: '#struct-field'
-
   # enum-declaration:
   #   name: meta.enum.cpp2
   #   begin: \b(enum)\b\s+
@@ -452,101 +395,6 @@ repository:
   #       end: (?=[,\n\}])
   #       patterns:
   #       - include: '#struct-definition'
-
-  # class-declaration:
-  #   begin: (?=\b(?:\bstatic\s+)?class\b)
-  #   end: (?<=\})
-  #   patterns:
-  #   - begin: |
-  #       (?x)
-  #       (?:\b(static)\s+)?
-  #       \b(class)\b\s+ 
-  #       (?<name>{{identifier}})\s*
-  #       (?:\(\s*(?<metaclass>{{identifier}})\s*\))?
-  #     beginCaptures:
-  #       '1': { name: storage.modifier.class.cpp2 }
-  #       '2': { name: keyword.other.class.cpp2 }
-  #       '3': { name: entity.name.class.cpp2 }
-  #       '4':  
-  #         name: entity.name.meta-class.cpp2
-  #         patterns: 
-  #         - include: '#type-name'
-  #     end: (?=\{)
-  #     patterns:
-  #     - include: '#comment'
-  #     - include: '#base-types'
-  #   - include: '#class-body'
-    
-  # base-types:
-  #   name: meta.base-types.cpp2
-  #   begin: ':'
-  #   beginCaptures:
-  #     '0': { name: punctuation.separator.colon.cpp2 }
-  #   end: (?=\{)
-  #   patterns:
-  #   - include: '#type-name'
-  #   - include: '#punctuation-comma'
-
-  # class-body:
-  #   name: meta.class.body.cpp2
-  #   begin: \{
-  #   beginCaptures:
-  #     '0': { name: punctuation.curlybrace.open.cpp2 }
-  #   end: \}
-  #   endCaptures:
-  #     '0': { name: punctuation.curlybrace.close.cpp2 }
-  #   patterns:
-  #   - include: '#comment'
-  #   - include: '#class-member'
-  
-  # class-member:
-  #   patterns:
-  #   - include: '#function-declaration'
-  #   - include: '#property-declaration'
-  #   - include: '#field-declaration'
-
-  # field-declaration:
-  #   begin: ({{identifier}})\s*(?=:)
-  #   beginCaptures:
-  #     '1': { name: entity.name.variable.property.cpp2 }
-  #   end: (?<=\;)  
-  #   patterns:
-  #   - include: '#typing'
-
-  # property-declaration:
-  #   begin: ({{identifier}})\s*(?=:.*?\{)
-  #   beginCaptures:
-  #     '1': { name: entity.name.variable.property.cpp2 }
-  #   end: (?<=\})  
-  #   patterns:
-  #   - include: '#typing'
-  #   - comment: property-body
-  #     begin: \{
-  #     beginCaptures:
-  #       '0': { name: punctuation.curlybrace.open.cpp2 }
-  #     end: \}
-  #     endCaptures:
-  #       '0': { name: punctuation.curlybrace.close.cpp2 }
-  #     patterns:
-  #     - include: '#comment'
-  #     - include: '#get-property'
-  #     - include: '#set-property'
-  
-  # get-property:
-  #   begin: \b(get)\b
-  #   beginCaptures:
-  #     '1': { name: keyword.other.get.cpp2 }
-  #   end: (?<=\})  
-  #   patterns:
-  #   - include: '#function-body'
-
-  # set-property:
-  #   begin: \b(set)\b
-  #   beginCaptures:
-  #     '1': { name: keyword.other.set.cpp2 }
-  #   end: (?<=\})  
-  #   patterns:
-  #   - include: '#function-body'
 
   comment:
     patterns:
@@ -572,47 +420,6 @@ repository:
         beginCaptures:
           '0': { name: punctuation.definition.comment.cpp2 }
         end: (?=$)
-
-  # namespace-block:
-  #   patterns:
-  #   - include: "#function-declaration"
-
-  # keywords:
-  #   patterns:
-  #   - name: keyword.control.flow.cpp2
-  #     match: \b(if|while|for|return)\b
-
-  # function-modifier:
-  #   name: storage.modifier.function.cpp2
-  #   match: (?<!\.)\b(public|protected|private|static|__entrypoint)\b
-  
- 
-
-  # function-declaration:
-  #   begin: |
-  #     (?x)
-  #     ((?:\s*{{identifier}}\s+)*)
-  #     \s*(func)\s+
-  #     ({{identifier}})
-  #   beginCaptures:
-  #     "1": 
-  #       patterns:
-  #         - include: '#function-modifier'
-  #     "2": { name: storage.modifier.cpp2 }
-  #     '3': { name: entity.name.function.cpp2 }
-  #   end: (?<=\})
-  #   patterns:
-  #   - include: '#parenthesized-parameters'
-  #   - include: '#typing'
-  #   - include: '#function-body'
-
-  # return-statement:
-  #   begin: \b(return)\b
-  #   beginCaptures:
-  #     '1': { name: keyword.control.flow.return.cpp2 }
-  #   end: (?=[;\n])
-  #   patterns:
-  #   - include: '#expression'
 
   function-call:
     name: meta.function-call.cpp2
@@ -758,27 +565,5 @@ repository:
     patterns:
     - name: constant.character.escape.cpp2
       match: "\\\\."
-
-  # template-definition:
-    # begin: (?<!\w)(template)(?:(?:\s)+)?(<)
-    # end: '>'
-    # beginCaptures:
-    #   1:
-    #     name: storage.type.template.cpp2
-    #   2:
-    #     name: punctuation.section.angle-brackets.start.template.definition.cpp2
-    # endCaptures:
-    #   0:
-    #     name: punctuation.section.angle-brackets.end.template.definition.cpp2
-    # name: meta.template.definition.cpp2
-    # patterns:
-    #   - begin: (?<=\w)(?:(?:\s)+)?<
-    #     end: '>'
-    #     beginCaptures:
-    #       0:
-    #         name: punctuation.section.angle-brackets.begin.template.call.cpp2
-    #     endCaptures:
-    #       0:
-    #         name: punctuation.section.angle-brackets.begin.template.call.cpp2
 
 scopeName: source.cpp2

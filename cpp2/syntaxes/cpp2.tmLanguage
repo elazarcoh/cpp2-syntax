@@ -61,6 +61,10 @@
         <array>
           <dict>
             <key>include</key>
+            <string>#unnamed-function</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#string</string>
           </dict>
           <dict>
@@ -130,6 +134,22 @@
           <dict>
             <key>include</key>
             <string>#else</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#while</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#next</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#for</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#do</string>
           </dict>
           <dict>
             <key>include</key>
@@ -284,8 +304,8 @@
         <string>meta.definition.function.cpp2</string>
         <key>begin</key>
         <string>(?x)
-([_[:alpha:]][_[:alnum:]]*)\s*
-(:(?:[\s]|$))\s*
+([_[:alpha:]][_[:alnum:]]*)
+(?=\s*[:]\s*[\(])
 </string>
         <key>beginCaptures</key>
         <dict>
@@ -293,11 +313,6 @@
           <dict>
             <key>name</key>
             <string>entity.name.function.declaration.cpp2</string>
-          </dict>
-          <key>2</key>
-          <dict>
-            <key>name</key>
-            <string>punctuation.separator.colon.cpp2</string>
           </dict>
         </dict>
         <key>end</key>
@@ -307,6 +322,38 @@
           <dict>
             <key>include</key>
             <string>#function-typing</string>
+          </dict>
+        </array>
+      </dict>
+      <key>unnamed-function</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.unnamed-function.cpp2</string>
+        <key>begin</key>
+        <string>(:)(?=[\s\(])</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=[\};])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#function-type</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#scoped-code-block</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
           </dict>
         </array>
       </dict>
@@ -361,7 +408,7 @@
       <key>binary-operator</key>
       <dict>
         <key>name</key>
-        <string>keyword.operator.binary.cpp2</string>
+        <string>keyword.operator.cpp2</string>
         <key>match</key>
         <string>(?x)
 (
@@ -379,7 +426,7 @@
       <key>unary-operator</key>
       <dict>
         <key>name</key>
-        <string>keyword.operator.unary.cpp2</string>
+        <string>keyword.operator.cpp2</string>
         <key>match</key>
         <string>(?x)
 (?&lt;=((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*))
@@ -442,6 +489,8 @@
       </dict>
       <key>if</key>
       <dict>
+        <key>name</key>
+        <string>meta.control.if.cpp2</string>
         <key>begin</key>
         <string>\b(if)\b</string>
         <key>beginCaptures</key>
@@ -464,6 +513,8 @@
       </dict>
       <key>else</key>
       <dict>
+        <key>name</key>
+        <string>meta.control.else.cpp2</string>
         <key>begin</key>
         <string>\b(else)\b</string>
         <key>beginCaptures</key>
@@ -476,6 +527,105 @@
         </dict>
         <key>end</key>
         <string>(?=[\{])</string>
+      </dict>
+      <key>while</key>
+      <dict>
+        <key>name</key>
+        <string>meta.control.while.cpp2</string>
+        <key>begin</key>
+        <string>\b(while)\b</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.while.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[\{;]|next)</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+        </array>
+      </dict>
+      <key>next</key>
+      <dict>
+        <key>name</key>
+        <string>meta.control.next.cpp2</string>
+        <key>begin</key>
+        <string>\b(next)\b</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.next.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[\{;])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+        </array>
+      </dict>
+      <key>do</key>
+      <dict>
+        <key>name</key>
+        <string>meta.control.do.cpp2</string>
+        <key>begin</key>
+        <string>\b(do)\b</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.do.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[\{])</string>
+      </dict>
+      <key>for</key>
+      <dict>
+        <key>name</key>
+        <string>meta.control.for.cpp2</string>
+        <key>begin</key>
+        <string>\b(for)\b</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.for.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[\}])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>match</key>
+            <string>\b(do)\b</string>
+            <key>name</key>
+            <string>keyword.control.do.cpp2</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#unnamed-function</string>
+          </dict>
+        </array>
       </dict>
       <key>delete</key>
       <dict>
@@ -520,7 +670,15 @@
         <key>name</key>
         <string>meta.typing.cpp2</string>
         <key>begin</key>
-        <string>(?&lt;=:(?:[\s]|$))\s*</string>
+        <string>(:)(?=[\s\(])</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+        </dict>
         <key>end</key>
         <string>(?=\s*(?=[=;]))</string>
         <key>patterns</key>
@@ -619,7 +777,7 @@
           </dict>
         </array>
       </dict>
-      <key>function-return-type-seperator</key>
+      <key>function-return-type-separator</key>
       <dict>
         <key>name</key>
         <string>punctuation.separator.function-return-type.cpp2</string>
@@ -644,7 +802,7 @@
           </dict>
           <dict>
             <key>include</key>
-            <string>#function-return-type-seperator</string>
+            <string>#function-return-type-separator</string>
           </dict>
           <dict>
             <key>include</key>
