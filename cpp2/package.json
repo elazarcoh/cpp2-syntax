@@ -30,7 +30,41 @@
                 "scopeName": "source.cpp2",
                 "path": "./syntaxes/cpp2.tmLanguage"
             }
-        ]
+        ],
+        "configurationDefaults": {
+            "editor.tokenColorCustomizations": {
+                "[Default Dark+]": {
+                    "textMateRules": [
+                        {
+                            "scope": "entity.name.variable.declaration.cpp2",
+                            "settings": {
+                                "foreground": "#76edfd"
+                            }
+                        },
+                        {
+                            "scope": "entity.name.function.declaration.cpp2",
+                            "settings": {
+                                "foreground": "#fde276"
+                            }
+                        }
+                    ]
+                },
+                "textMateRules": [
+                    {
+                        "scope": "entity.name.variable.declaration.cpp2",
+                        "settings": {
+                            "fontStyle": "bold"
+                        }
+                    },
+                    {
+                        "scope": "entity.name.function.declaration.cpp2",
+                        "settings": {
+                            "fontStyle": "bold"
+                        }
+                    }
+                ]
+            }
+        }
     },
     "scripts": {
         "build": "node ../utils/build.js",
