@@ -40,6 +40,7 @@ repository:
     - include: '#new'
     - include: '#function-call'
     - include: '#variable-definition-typed'
+    - include: '#variable-definition-auto'
     - include: '#variable-name'
 
   return-statement:
@@ -87,7 +88,23 @@ repository:
     begin: |
       (?x)
       {{namespaced_identifier}}\s*
-      ({{colon}})\s*
+      (?={{colon}})
+    beginCaptures:
+      "1": 
+        patterns: 
+        - include: '#namespace-access'
+      "2": { name: entity.name.variable.declaration.cpp2 }
+    end: (?<=;)
+    patterns:
+    - include: '#typing'
+    - include: '#assignment'
+
+  variable-definition-auto:
+    name: meta.definition.variable.cpp2
+    begin: |
+      (?x)
+      {{namespaced_identifier}}\s*
+      (:)(?=[=])
     beginCaptures:
       "1": 
         patterns: 
@@ -96,7 +113,6 @@ repository:
       "3": { name: punctuation.separator.colon.cpp2 }
     end: (?<=;)
     patterns:
-    - include: '#typing'
     - include: '#assignment'
 
   assignment:
@@ -384,7 +400,9 @@ repository:
 
   typing:
     name: meta.typing.cpp2
-    begin: (?<={{colon}})\s*
+    begin: (:)
+    beginCaptures:
+      "1": { name: punctuation.separator.colon.cpp2 }
     end: (?=\s*(?=[=;]))
     patterns:
     - include: '#type'   

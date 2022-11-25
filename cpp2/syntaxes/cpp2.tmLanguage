@@ -93,6 +93,10 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#variable-definition-auto</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#variable-name</string>
           </dict>
         </array>
@@ -223,7 +227,48 @@
         <key>begin</key>
         <string>(?x)
 ((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
-(:(?:[\s]|$))\s*
+(?=:(?:[\s]|$))
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#namespace-access</string>
+              </dict>
+            </array>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.variable.declaration.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=;)</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#typing</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#assignment</string>
+          </dict>
+        </array>
+      </dict>
+      <key>variable-definition-auto</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.variable.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
+(:)(?=[=])
 </string>
         <key>beginCaptures</key>
         <dict>
@@ -252,10 +297,6 @@
         <string>(?&lt;=;)</string>
         <key>patterns</key>
         <array>
-          <dict>
-            <key>include</key>
-            <string>#typing</string>
-          </dict>
           <dict>
             <key>include</key>
             <string>#assignment</string>
@@ -1011,7 +1052,15 @@
         <key>name</key>
         <string>meta.typing.cpp2</string>
         <key>begin</key>
-        <string>(?&lt;=:(?:[\s]|$))\s*</string>
+        <string>(:)</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+        </dict>
         <key>end</key>
         <string>(?=\s*(?=[=;]))</string>
         <key>patterns</key>
