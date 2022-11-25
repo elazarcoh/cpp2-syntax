@@ -68,9 +68,8 @@
     },
     "scripts": {
         "build": "node ../utils/build.js",
-        "package": "vsce package --yarn"
+        "package": "vsce package --yarn",
+        "prepublish": "yarn build"
     },
-    "dependencies": {
-        "vsce": "^2.6.6"
-    }
+    "dependencies": {}
 }
