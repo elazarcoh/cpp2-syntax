@@ -61,23 +61,27 @@
         <array>
           <dict>
             <key>include</key>
+            <string>#inspect</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#as</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#unnamed-function</string>
           </dict>
           <dict>
             <key>include</key>
-            <string>#string</string>
-          </dict>
-          <dict>
-            <key>include</key>
-            <string>#numeric-literal</string>
-          </dict>
-          <dict>
-            <key>include</key>
-            <string>#boolean-literal</string>
+            <string>#literals</string>
           </dict>
           <dict>
             <key>include</key>
             <string>#operators</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#new</string>
           </dict>
           <dict>
             <key>include</key>
@@ -107,8 +111,6 @@
             <string>keyword.control.return.cpp2</string>
           </dict>
         </dict>
-        <key>end</key>
-        <string>(?&lt;=;)</string>
         <key>patterns</key>
         <array>
           <dict>
@@ -150,10 +152,6 @@
           <dict>
             <key>include</key>
             <string>#do</string>
-          </dict>
-          <dict>
-            <key>include</key>
-            <string>#delete</string>
           </dict>
           <dict>
             <key>include</key>
@@ -627,20 +625,205 @@
           </dict>
         </array>
       </dict>
-      <key>delete</key>
+      <key>new</key>
       <dict>
+        <key>name</key>
+        <string>meta.control.new.cpp2</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>begin</key>
+            <string>\b(new)\.(unique)\b</string>
+            <key>beginCaptures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>keyword.control.new.cpp2</string>
+              </dict>
+              <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>keyword.control.new.unique.cpp2</string>
+              </dict>
+            </dict>
+            <key>end</key>
+            <string>(?&lt;=[&gt;])</string>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#type-inside-angle-brackets</string>
+              </dict>
+            </array>
+          </dict>
+          <dict>
+            <key>begin</key>
+            <string>\b(new)\.(shared)\b</string>
+            <key>beginCaptures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>keyword.control.new.cpp2</string>
+              </dict>
+              <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>keyword.control.new.shared.cpp2</string>
+              </dict>
+            </dict>
+            <key>end</key>
+            <string>(?&lt;=[&gt;])</string>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#type-inside-angle-brackets</string>
+              </dict>
+            </array>
+          </dict>
+          <dict>
+            <key>begin</key>
+            <string>\b(new)\b</string>
+            <key>beginCaptures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>keyword.control.new.cpp2</string>
+              </dict>
+            </dict>
+            <key>end</key>
+            <string>(?&lt;=[&gt;])</string>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#type-inside-angle-brackets</string>
+              </dict>
+            </array>
+          </dict>
+          <dict>
+            <key>begin</key>
+            <string>\b(gc)\.(new)\b</string>
+            <key>beginCaptures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>keyword.control.gc.cpp2</string>
+              </dict>
+              <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>keyword.control.new.cpp2</string>
+              </dict>
+            </dict>
+            <key>end</key>
+            <string>(?&lt;=[&gt;])</string>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#type-inside-angle-brackets</string>
+              </dict>
+            </array>
+          </dict>
+          <dict>
+            <key>match</key>
+            <string>\b(delete)\b</string>
+            <key>captures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>keyword.control.delete.cpp2</string>
+              </dict>
+            </dict>
+          </dict>
+        </array>
+      </dict>
+      <key>type-inside-angle-brackets</key>
+      <dict>
+        <key>name</key>
+        <string>meta.type.inside-angle-brackets.cpp2</string>
         <key>begin</key>
-        <string>\b(delete)\b</string>
+        <string>(&lt;)</string>
         <key>beginCaptures</key>
         <dict>
           <key>1</key>
           <dict>
             <key>name</key>
-            <string>keyword.control.delete.cpp2</string>
+            <string>punctuation.anglebracket.open.cpp2</string>
           </dict>
         </dict>
         <key>end</key>
-        <string>;</string>
+        <string>(&gt;)</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.anglebracket.close.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#type</string>
+          </dict>
+        </array>
+      </dict>
+      <key>inspect</key>
+      <dict>
+        <key>name</key>
+        <string>meta.control.inspect.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+\b(inspect)\b
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.inspect.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=[\}])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#inspected-expression</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#inspect-return-type</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#inspect-block</string>
+          </dict>
+        </array>
+      </dict>
+      <key>inspected-expression</key>
+      <dict>
+        <key>begin</key>
+        <string>(?&lt;=\b(inspect)\b)\s*</string>
+        <key>end</key>
+        <string>(?=-&gt;)</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.inspect.cpp2</string>
+          </dict>
+        </dict>
         <key>patterns</key>
         <array>
           <dict>
@@ -649,14 +832,102 @@
           </dict>
         </array>
       </dict>
-      <key>typing</key>
+      <key>inspect-return-type</key>
+      <dict>
+        <key>begin</key>
+        <string>(-&gt;)\s*</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.inspect.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=\{)</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#type</string>
+          </dict>
+        </array>
+      </dict>
+      <key>inspect-block</key>
+      <dict>
+        <key>begin</key>
+        <string>(\{)</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.curlybrace.open.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(\})</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.curlybrace.close.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#is</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+        </array>
+      </dict>
+      <key>is</key>
       <dict>
         <key>name</key>
-        <string>meta.typing.cpp2</string>
+        <string>meta.control.inspect.is.cpp2</string>
         <key>begin</key>
-        <string>(?&lt;=:(?:[\s]|$))\s*</string>
+        <string>\b(is)\b\s*</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.inspect.is.cpp2</string>
+          </dict>
+        </dict>
         <key>end</key>
-        <string>(?=\s*(?=[=;]))</string>
+        <string>(?=[=])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#type</string>
+          </dict>
+        </array>
+      </dict>
+      <key>as</key>
+      <dict>
+        <key>name</key>
+        <string>meta.operator.as.cpp2</string>
+        <key>begin</key>
+        <string>\b(as)\b\s*</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.operator.as.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[;{}()\[\]]|$)</string>
         <key>patterns</key>
         <array>
           <dict>
@@ -701,6 +972,10 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#type-template-instance</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#type-name</string>
           </dict>
           <dict>
@@ -721,6 +996,22 @@
             <string>keyword.operator.pointer.cpp2</string>
           </dict>
         </dict>
+        <key>end</key>
+        <string>(?=\s*(?=[=;]))</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#type</string>
+          </dict>
+        </array>
+      </dict>
+      <key>typing</key>
+      <dict>
+        <key>name</key>
+        <string>meta.typing.cpp2</string>
+        <key>begin</key>
+        <string>(?&lt;=:(?:[\s]|$))\s*</string>
         <key>end</key>
         <string>(?=\s*(?=[=;]))</string>
         <key>patterns</key>
@@ -774,6 +1065,60 @@
             <string>entity.name.type.cpp2</string>
             <key>match</key>
             <string>[_[:alpha:]][_[:alnum:]]*</string>
+          </dict>
+        </array>
+      </dict>
+      <key>type-template-instance</key>
+      <dict>
+        <key>name</key>
+        <string>meta.type.template-instance.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
+(&lt;)
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#namespace-access</string>
+              </dict>
+            </array>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.type.cpp2</string>
+          </dict>
+          <key>3</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.template.begin.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(&gt;)</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.template.end.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#type</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#comma</string>
           </dict>
         </array>
       </dict>
@@ -1096,14 +1441,14 @@
           </dict>
         </array>
       </dict>
-      <key>boolean-literal</key>
+      <key>boolean</key>
       <dict>
         <key>name</key>
         <string>constant.language.boolean.cpp2</string>
         <key>match</key>
         <string>\b(true|false)\b</string>
       </dict>
-      <key>numeric-literal</key>
+      <key>numeric</key>
       <dict>
         <key>comment</key>
         <string>TODO taken from C# as is. Need to modify.</string>
@@ -1365,6 +1710,57 @@
             <string>constant.character.escape.cpp2</string>
             <key>match</key>
             <string>\\.</string>
+          </dict>
+        </array>
+      </dict>
+      <key>character</key>
+      <dict>
+        <key>name</key>
+        <string>string.quoted.single.cpp2</string>
+        <key>begin</key>
+        <string>'</string>
+        <key>end</key>
+        <string>'</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>name</key>
+            <string>constant.character.escape.cpp2</string>
+            <key>match</key>
+            <string>\\.</string>
+          </dict>
+        </array>
+      </dict>
+      <key>nullptr</key>
+      <dict>
+        <key>name</key>
+        <string>constant.language.nullptr.cpp2</string>
+        <key>match</key>
+        <string>\b(nullptr)\b</string>
+      </dict>
+      <key>literals</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#numeric</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#string</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#character</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#nullptr</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#boolean</string>
           </dict>
         </array>
       </dict>

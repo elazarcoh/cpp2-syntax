@@ -7,6 +7,7 @@ variables:
   namespaced_identifier: '((?:{{identifier}}::)*)({{identifier}})'
   colon: ':(?:[\s]|$)'
   coloncolon: '::'
+  expression_end: '[;{}()\[\]]|$'
 
 patterns:
 - include: '#comment'
@@ -32,11 +33,9 @@ repository:
     name: meta.expression.cpp2
     patterns:
     - include: '#inspect'
+    - include: '#as'
     - include: '#unnamed-function'
-    - include: '#string'
-    - include: '#character'
-    - include: '#numeric-literal'
-    - include: '#boolean-literal'
+    - include: '#literals'
     - include: '#operators'
     - include: '#new'
     - include: '#function-call'
@@ -48,7 +47,7 @@ repository:
     begin: \b(return)\b
     beginCaptures:
       "1": { name: keyword.control.return.cpp2 }
-    end: (?<=;)
+
     patterns:
     - include: '#expression'
 
@@ -251,48 +250,77 @@ repository:
   new:
     name: meta.control.new.cpp2
     patterns:
-      - match: \b(new)\.(unique)\b
-        captures:
+      - begin: \b(new)\.(unique)\b
+        beginCaptures:
           "1": { name: keyword.control.new.cpp2 }
           "2": { name: keyword.control.new.unique.cpp2 }
-      - match: \b(new)\.(shared)\b
-        captures:
+        end: (?<=[>])
+        patterns:
+        - include: '#type-inside-angle-brackets'
+      - begin: \b(new)\.(shared)\b
+        beginCaptures:
           "1": { name: keyword.control.new.cpp2 }
           "2": { name: keyword.control.new.shared.cpp2 }
-      - match: \b(new)\b
-        captures:
+        end: (?<=[>])
+        patterns:
+        - include: '#type-inside-angle-brackets'
+      - begin: \b(new)\b
+        beginCaptures:
           "1": { name: keyword.control.new.cpp2 }
-      - match: \b(gc)\.(new)\b
-        captures:
+        end: (?<=[>])
+        patterns:
+        - include: '#type-inside-angle-brackets'
+      - begin: \b(gc)\.(new)\b
+        beginCaptures:
           "1": { name: keyword.control.gc.cpp2 }
           "2": { name: keyword.control.new.cpp2 }
+        end: (?<=[>])
+        patterns:
+        - include: '#type-inside-angle-brackets'
       - match: \b(delete)\b
         captures:
           "1": { name: keyword.control.delete.cpp2 }
+  
+  type-inside-angle-brackets:
+    name: meta.type.inside-angle-brackets.cpp2
+    begin: (<)
+    beginCaptures:
+      "1": { name: punctuation.anglebracket.open.cpp2 }
+    end: (>)
+    endCaptures:
+      "1": { name: punctuation.anglebracket.close.cpp2 }
+    patterns:
+    - include: '#type'
 
   inspect:
     name: meta.control.inspect.cpp2
     begin: |
       (?x)
-      \b(inspect)\b\s*
-      {{namespaced_identifier}}\s*
-      (->)\s*
-      {{namespaced_identifier}}
+      \b(inspect)\b
     beginCaptures:
       "1": { name: keyword.control.inspect.cpp2 }
-      "2": 
-        patterns: 
-        - include: '#namespace-access'
-      "3": { name: entity.name.variable.cpp2 }
-      "4": { name: keyword.operator.cpp2 }
-      "5": 
-        patterns: 
-        - include: '#namespace-access'
-      "6": { name: entity.name.type.cpp2 }
     end: (?<=[\}])
     patterns:
+    - include: '#inspected-expression'
+    - include: '#inspect-return-type'
     - include: '#inspect-block'
-  
+
+  inspected-expression:
+    begin: (?<=\b(inspect)\b)\s*
+    end: (?=->)
+    endCaptures:
+      "1": { name: keyword.control.inspect.cpp2 }
+    patterns:
+    - include: '#expression'
+
+  inspect-return-type:
+    begin: (->)\s*
+    beginCaptures:
+      "1": { name: keyword.control.inspect.cpp2 }
+    end: (?=\{)
+    patterns:
+    - include: '#type'
+
   inspect-block:
     begin: (\{)
     beginCaptures:
@@ -302,36 +330,25 @@ repository:
       "1": { name: punctuation.curlybrace.close.cpp2 }
     patterns:
     - include: '#is'
+    - include: '#expression'
 
   is:
     name: meta.control.inspect.is.cpp2
-    begin: |
-      (?x)
-      \b(is)\b\s*
-      ({{namespaced_typename}})\s*
-      (=)
+    begin: \b(is)\b\s*
     beginCaptures:
       "1": { name: keyword.control.inspect.is.cpp2 }
-      "2": 
-        patterns: 
-        - include: '#namespace-access-type'
-      "4": { name: keyword.operator.cpp2 }
-    end: (?=[;])
+    end: (?=[=])
     patterns:
-    - include: '#expression'
+    - include: '#type'
 
-  as-operator:
+  as:
     name: meta.operator.as.cpp2
-    match: |
-      (?x)
-      \b(as)\b\s*
-      {{namespaced_identifier}}\s*
-    captures:
+    begin: \b(as)\b\s*
+    beginCaptures:
       "1": { name: keyword.control.operator.as.cpp2 }
-      "2": 
-        patterns: 
-        - include: '#namespace-access'
-      "3": { name: entity.name.type.cpp2 }
+    end: (?={{expression_end}})
+    patterns:
+    - include: '#type'
 
   function-typing:
     name: meta.typing.cpp2
@@ -346,6 +363,7 @@ repository:
     name: meta.type.cpp2
     patterns:
     - include: '#function-type'
+    - include: '#type-template-instance'
   #   - include: '#type-builtin'
     - include: '#type-name'
     - include: '#pointer-type'
@@ -383,6 +401,25 @@ repository:
         '2': { name: entity.name.type.cpp2 }
     - name: entity.name.type.cpp2
       match: '{{identifier}}'
+
+  type-template-instance:
+    name: meta.type.template-instance.cpp2
+    begin: |
+      (?x)
+      {{namespaced_identifier}}\s*
+      (<)
+    beginCaptures:
+      "1": 
+        patterns: 
+        - include: '#namespace-access'
+      "2": { name: entity.name.type.cpp2 }
+      "3": { name: punctuation.template.begin.cpp2 }
+    end: (>)
+    endCaptures:
+      "1": { name: punctuation.template.end.cpp2 }
+    patterns:
+    - include: '#type'
+    - include: '#comma'
 
   function-return-type-separator:
     name: punctuation.separator.function-return-type.cpp2
@@ -528,11 +565,11 @@ repository:
     - include: '#expression'
     - include: '#punctuation-comma'
 
-  boolean-literal:
+  boolean:
     name: constant.language.boolean.cpp2
     match: \b(true|false)\b
 
-  numeric-literal:
+  numeric:
     comment: TODO taken from C# as is. Need to modify.
     match: "(?<!\\w)\\.?\\d(?:(?:[0-9a-zA-Z_\\.]|_)|(?<=[eE])[+-])*"
     captures:
@@ -642,5 +679,15 @@ repository:
     patterns:
     - name: constant.character.escape.cpp2
       match: "\\\\."
+  nullptr:
+    name: constant.language.nullptr.cpp2
+    match: \b(nullptr)\b
+  literals:
+    patterns:
+    - include: "#numeric"
+    - include: "#string"
+    - include: "#character"
+    - include: "#nullptr"
+    - include: "#boolean"
 
 scopeName: source.cpp2
