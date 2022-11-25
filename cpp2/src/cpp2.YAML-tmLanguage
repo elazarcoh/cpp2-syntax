@@ -48,7 +48,9 @@ repository:
     begin: \b(return)\b
     beginCaptures:
       "1": { name: keyword.control.return.cpp2 }
-
+    end: (;)
+    endCaptures:
+      "1": { name: punctuation.terminator.statement.cpp2 }
     patterns:
     - include: '#expression'
 

@@ -115,6 +115,16 @@
             <string>keyword.control.return.cpp2</string>
           </dict>
         </dict>
+        <key>end</key>
+        <string>(;)</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.terminator.statement.cpp2</string>
+          </dict>
+        </dict>
         <key>patterns</key>
         <array>
           <dict>
