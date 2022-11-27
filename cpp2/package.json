@@ -70,7 +70,8 @@
     "scripts": {
         "build": "node ../utils/build.js",
         "package": "vsce package --yarn",
-        "prepublish": "yarn build",
+        "prepack": "yarn build && npx shx cp  ../README.md ../LICENSE ./",
+        "vscode:prepublish": "yarn run prepack",
         "publish": "vsce publish --yarn"
     },
     "dependencies": {}
