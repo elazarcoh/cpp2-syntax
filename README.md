@@ -1,4 +1,4 @@
-# [cpp2 (cppfront)](https://github.com/hsutter/cppfront)) Syntax Highlighting for VSCode
+# [cpp2 (cppfront)](https://github.com/hsutter/cppfront) Syntax Highlighting for VSCode
 
 This extension provides syntax highlighting for the experimental [cpp2](https://github.com/hsutter/cppfront) language.
 
