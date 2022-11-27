@@ -70,7 +70,8 @@
     "scripts": {
         "build": "node ../utils/build.js",
         "package": "vsce package --yarn",
-        "prepublish": "yarn build"
+        "prepublish": "yarn build",
+        "publish": "vsce publish --yarn"
     },
     "dependencies": {}
 }
