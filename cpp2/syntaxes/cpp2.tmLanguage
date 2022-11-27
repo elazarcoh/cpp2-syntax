@@ -69,6 +69,10 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#is</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#unnamed-function</string>
           </dict>
           <dict>
