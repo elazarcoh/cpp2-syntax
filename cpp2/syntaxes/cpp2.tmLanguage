@@ -153,6 +153,10 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#else-if</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#else</string>
           </dict>
           <dict>
@@ -580,6 +584,35 @@
         </dict>
         <key>end</key>
         <string>(?=[\{])</string>
+      </dict>
+      <key>else-if</key>
+      <dict>
+        <key>name</key>
+        <string>meta.control.else-if.cpp2</string>
+        <key>begin</key>
+        <string>\b(else)\b\s*\b(if)\b</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.else.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.if.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[\{])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+        </array>
       </dict>
       <key>while</key>
       <dict>

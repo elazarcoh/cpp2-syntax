@@ -60,6 +60,7 @@ repository:
     patterns:
     - include: '#return-statement'
     - include: '#if'
+    - include: '#else-if'
     - include: '#else'
     - include: '#while'
     - include: '#next'
@@ -228,6 +229,16 @@ repository:
     beginCaptures:
       "1": { name: keyword.control.else.cpp2 }
     end: (?=[\{])
+
+  else-if:
+    name: meta.control.else-if.cpp2
+    begin: \b(else)\b\s*\b(if)\b
+    beginCaptures:
+      "1": { name: keyword.control.else.cpp2 }
+      "2": { name: keyword.control.if.cpp2 }
+    end: (?=[\{])
+    patterns:
+    - include: '#expression'
 
   while:
     name: meta.control.while.cpp2
