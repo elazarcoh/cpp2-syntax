@@ -700,10 +700,34 @@ repository:
   string:
     name: string.quoted.double.cpp2
     begin: "\""
+    beginCaptures:
+      "0": { name: punctuation.definition.string.begin.cpp2 }
     end: "\""
+    endCaptures:
+      "0": { name: punctuation.definition.string.end.cpp2 }
     patterns:
     - name: constant.character.escape.cpp2
       match: "\\\\."
+
+  string-literals:
+    name: string.quoted.double.cpp2
+    begin: (u|U|u8|L)(?=")
+    beginCaptures:
+      "1": { name: keyword.other.string-literals.cpp2 }
+    end: (?<=")
+    patterns:
+    - include: "#string"
+
+  raw-string:
+    name: string.quoted.double.cpp2
+    begin: (R|uR|u8R|UR|LR)("\()
+    beginCaptures:
+      "1": { name: keyword.other.string-literals.cpp2 }
+      "2": { name: punctuation.definition.string.begin.cpp2 }
+    end: (\)")
+    endCaptures:
+      "1": { name: punctuation.definition.string.end.cpp2 }
+
   character:
     name: string.quoted.single.cpp2
     begin: "'"
@@ -711,12 +735,16 @@ repository:
     patterns:
     - name: constant.character.escape.cpp2
       match: "\\\\."
+
   nullptr:
     name: constant.language.nullptr.cpp2
     match: \b(nullptr)\b
+
   literals:
     patterns:
     - include: "#numeric"
+    - include: "#string-literals"
+    - include: "#raw-string"
     - include: "#string"
     - include: "#character"
     - include: "#nullptr"

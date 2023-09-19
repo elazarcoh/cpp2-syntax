@@ -1797,8 +1797,24 @@
         <string>string.quoted.double.cpp2</string>
         <key>begin</key>
         <string>"</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.definition.string.begin.cpp2</string>
+          </dict>
+        </dict>
         <key>end</key>
         <string>"</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.definition.string.end.cpp2</string>
+          </dict>
+        </dict>
         <key>patterns</key>
         <array>
           <dict>
@@ -1808,6 +1824,60 @@
             <string>\\.</string>
           </dict>
         </array>
+      </dict>
+      <key>string-literals</key>
+      <dict>
+        <key>name</key>
+        <string>string.quoted.double.cpp2</string>
+        <key>begin</key>
+        <string>(u|U|u8|L)(?=")</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.other.string-literals.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=")</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#string</string>
+          </dict>
+        </array>
+      </dict>
+      <key>raw-string</key>
+      <dict>
+        <key>name</key>
+        <string>string.quoted.double.cpp2</string>
+        <key>begin</key>
+        <string>(R|uR|u8R|UR|LR)("\()</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.other.string-literals.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.definition.string.begin.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(\)")</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.definition.string.end.cpp2</string>
+          </dict>
+        </dict>
       </dict>
       <key>character</key>
       <dict>
@@ -1841,6 +1911,14 @@
           <dict>
             <key>include</key>
             <string>#numeric</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#string-literals</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#raw-string</string>
           </dict>
           <dict>
             <key>include</key>
