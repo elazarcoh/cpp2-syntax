@@ -165,6 +165,10 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#labeled-while</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#next</string>
           </dict>
           <dict>
@@ -606,6 +610,44 @@
         </dict>
         <key>end</key>
         <string>(?=[\{])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+        </array>
+      </dict>
+      <key>labeled-while</key>
+      <dict>
+        <key>name</key>
+        <string>meta.control.while.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+([_[:alpha:]][_[:alnum:]]*)\s*
+(:(?:[\s]|$))
+\b(while)\b
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.label.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+          <key>3</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.while.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[\{;]|next)</string>
         <key>patterns</key>
         <array>
           <dict>

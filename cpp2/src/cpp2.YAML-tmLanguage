@@ -63,6 +63,7 @@ repository:
     - include: '#else-if'
     - include: '#else'
     - include: '#while'
+    - include: '#labeled-while'
     - include: '#next'
     - include: '#for'
     - include: '#do'
@@ -237,6 +238,21 @@ repository:
       "1": { name: keyword.control.else.cpp2 }
       "2": { name: keyword.control.if.cpp2 }
     end: (?=[\{])
+    patterns:
+    - include: '#expression'
+
+  labeled-while:
+    name: meta.control.while.cpp2
+    begin: |
+      (?x)
+      ({{identifier}})\s*
+      ({{colon}})
+      \b(while)\b
+    beginCaptures:
+      "1": { name: entity.name.label.cpp2 }
+      "2": { name: punctuation.separator.colon.cpp2 }
+      "3": { name: keyword.control.while.cpp2 }
+    end: (?=[\{;]|next)
     patterns:
     - include: '#expression'
 
