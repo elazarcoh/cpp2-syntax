@@ -93,6 +93,14 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#type-alias-definition</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#namespace-alias-definition</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#variable-definition-typed</string>
           </dict>
           <dict>
@@ -241,6 +249,139 @@
             <string>entity.name.variable.cpp2</string>
           </dict>
         </dict>
+      </dict>
+      <key>namespace-alias-definition</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.namespace-alias.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
+(:(?:[\s]|$))\s*
+\b(namespace)\b\s*
+(==)\s*
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#namespace-access</string>
+              </dict>
+            </array>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.variable.declaration.cpp2</string>
+          </dict>
+          <key>3</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+          <key>4</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.other.namespace-alias.cpp2</string>
+          </dict>
+          <key>5</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.operator.assignment.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=;)</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#namespace-name</string>
+          </dict>
+        </array>
+      </dict>
+      <key>namespace-name</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.namespace.cpp2</string>
+        <key>match</key>
+        <string>((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)</string>
+        <key>captures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#namespace-access</string>
+              </dict>
+            </array>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.namespace.cpp2</string>
+          </dict>
+        </dict>
+      </dict>
+      <key>type-alias-definition</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.type-alias.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
+(:(?:[\s]|$))\s*
+\b(type)\b\s*
+(==)\s*
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#namespace-access</string>
+              </dict>
+            </array>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.variable.declaration.cpp2</string>
+          </dict>
+          <key>3</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+          <key>4</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.other.type-alias.cpp2</string>
+          </dict>
+          <key>5</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.operator.assignment.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=;)</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#type</string>
+          </dict>
+        </array>
       </dict>
       <key>variable-definition-typed</key>
       <dict>

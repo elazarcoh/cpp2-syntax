@@ -40,6 +40,8 @@ repository:
     - include: '#operators'
     - include: '#new'
     - include: '#function-call'
+    - include: '#type-alias-definition'
+    - include: '#namespace-alias-definition'
     - include: '#variable-definition-typed'
     - include: '#variable-definition-auto'
     - include: '#variable-name'
@@ -87,6 +89,55 @@ repository:
         patterns: 
         - include: '#namespace-access'
       "2": { name: entity.name.variable.cpp2 }
+
+  namespace-alias-definition:
+    name: meta.definition.namespace-alias.cpp2
+    begin: |
+      (?x)
+      {{namespaced_identifier}}\s*
+      ({{colon}})\s*
+      \b(namespace)\b\s*
+      (==)\s*
+    beginCaptures:
+      "1": 
+        patterns: 
+        - include: '#namespace-access'
+      "2": { name: entity.name.variable.declaration.cpp2 }
+      "3": { name: punctuation.separator.colon.cpp2 }
+      "4": { name: keyword.other.namespace-alias.cpp2 }
+      "5": { name: keyword.operator.assignment.cpp2 }
+    end: (?<=;)
+    patterns:
+    - include: '#namespace-name'
+  
+  namespace-name:
+    name: meta.definition.namespace.cpp2
+    match: '{{namespaced_identifier}}'
+    captures:
+      "1": 
+        patterns: 
+        - include: '#namespace-access'
+      "2": { name: entity.name.namespace.cpp2 }
+
+  type-alias-definition:
+    name: meta.definition.type-alias.cpp2
+    begin: |
+      (?x)
+      {{namespaced_identifier}}\s*
+      ({{colon}})\s*
+      \b(type)\b\s*
+      (==)\s*
+    beginCaptures:
+      "1": 
+        patterns: 
+        - include: '#namespace-access'
+      "2": { name: entity.name.variable.declaration.cpp2 }
+      "3": { name: punctuation.separator.colon.cpp2 }
+      "4": { name: keyword.other.type-alias.cpp2 }
+      "5": { name: keyword.operator.assignment.cpp2 }
+    end: (?<=;)
+    patterns:
+    - include: '#type'
 
   variable-definition-typed:
     name: meta.definition.variable.cpp2
