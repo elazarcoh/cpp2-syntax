@@ -65,6 +65,12 @@
                         "settings": {
                             "fontStyle": "bold"
                         }
+                    },
+                      {
+                        "scope": "entity.name.type.declaration.cpp2",
+                        "settings": {
+                            "fontStyle": "bold"
+                        }
                     }
                 ]
             }

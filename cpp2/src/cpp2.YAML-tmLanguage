@@ -8,10 +8,14 @@ variables:
   colon: ':(?:[\s]|$)'
   coloncolon: '::'
   expression_end: '[;{}()\[\]]|$'
+  parameter_modifier: 'in|out|implicit\s+out|inout|copy|move|forward'
 
 patterns:
 - include: '#cpp1-block'
 - include: '#comment'
+- include: '#type-alias-definition'
+- include: '#namespace-alias-definition'
+- include: '#type-definition'
 - include: '#function-definition'
 - include: '#scoped-code-block'
 - include: '#statement'
@@ -20,15 +24,6 @@ repository:
   punctuation-comma:
     name: punctuation.separator.comma.cpp2
     match: ','
-
-  punctuation-colon:
-    name: punctuation.separator.colon.cpp2
-    match: '{{colon}}'
-
-  definition:
-    name: meta.definition.cpp2
-    patterns:
-    - include: '#function-definition'
 
   expression:
     name: meta.expression.cpp2
@@ -141,6 +136,41 @@ repository:
     patterns:
     - include: '#type'
 
+  type-definition:
+    name: meta.definition.type.cpp2
+    begin: |
+      (?x)
+      ({{identifier}})\s*
+      (:)\s*
+      \b(type)\b\s*
+      ([=])
+    beginCaptures:
+      "1": { name: entity.name.type.declaration.cpp2 }
+      "2": { name: punctuation.separator.colon.cpp2 }
+      "3": { name: keyword.other.type.cpp2 }
+      "4": { name: keyword.operator.assignment.cpp2 }
+    end: (?<=\})
+    patterns:
+    - include: '#scoped-type-block' 
+
+  scoped-type-block:
+    begin: (\{)
+    beginCaptures:
+      "1": { name: punctuation.curlybrace.open.cpp2 }
+    end: (\})
+    endCaptures:
+      "1": { name: punctuation.curlybrace.close.cpp2 }
+    patterns:
+    - include: '#type-block-content'
+
+  type-block-content:
+    patterns:
+    - include: '#comment'
+    - include: '#operator-definition'
+    - include: '#function-definition'
+    - include: '#variable-definition-typed'
+    - include: '#variable-definition-auto'
+
   variable-definition-typed:
     name: meta.definition.variable.cpp2
     begin: |
@@ -194,9 +224,11 @@ repository:
       (?=\s*[:]\s*[\(])
     beginCaptures:
       "1": { name: entity.name.function.declaration.cpp2 }
-    end: (?<=[=])
+    end: (?<=[\};])
     patterns:
     - include: '#function-typing'
+    - include: '#scoped-code-block'
+    - include: '#expression'
 
   unnamed-function:
     name: meta.definition.unnamed-function.cpp2
@@ -206,6 +238,27 @@ repository:
     end: (?<=[\};])
     patterns:
     - include: '#function-type'
+    - include: '#scoped-code-block'
+    - include: '#expression'
+
+  operator-definition:
+    name: meta.definition.operator.cpp2
+    begin: |
+      (?x)
+      (operator)
+      (=
+      |\+|-|\*|/|%|\+=|-=|\*=|/=|%=
+      |<<|>>|&|\||\^|<<=|>>=|&=|\|=|\^=
+      |&&|\|\||&&=|\|\|=
+      |==|!=|<|>|<=|>=|<=>
+      )
+      (?=\s*[:]\s*[\(])
+    beginCaptures:
+      "1": { name: keyword.other.operator.cpp2 }
+      "2": { name: keyword.operator.cpp2 }
+    end: (?<=[\};])
+    patterns:
+    - include: '#function-typing'
     - include: '#scoped-code-block'
     - include: '#expression'
 
@@ -537,10 +590,6 @@ repository:
     - include: '#parenthesized-parameters'
     - include: '#function-return-type-separator'
     - include: '#type'
-  
-  parameter-modifier:
-    name: storage.modifier.cpp2
-    match: \b(in|out|inout|copy|move|forward)\b
 
   parameter-name:
     match: |
@@ -549,17 +598,28 @@ repository:
     captures:
       '1': { name: entity.name.variable.parameter.cpp2 }
 
-  parameter:
-    name: meta.parameter.cpp2
+  untyped-parameter:
+    name: meta.untyped-parameter.cpp2
     begin: |
       (?x)
-      (?:(\w+)?\s+)?
+      (?:\b({{parameter_modifier}})\b\s+)?
+      ({{identifier}})\s*
+    beginCaptures:
+      "1":  { name: storage.modifier.cpp2 }
+      "2":
+        patterns:
+        - include: '#parameter-name'
+    end: (?=[\)\,])
+
+  typed-parameter:
+    name: meta.typed-parameter.cpp2
+    begin: |
+      (?x)
+      (?:\b({{parameter_modifier}})\b\s+)?
       ({{identifier}})\s*
       (:)\s*
     beginCaptures:
-      "1":  
-        patterns:
-        - include: '#parameter-modifier'
+      "1":  { name: storage.modifier.cpp2 }
       "2":
         patterns:
         - include: '#parameter-name'
@@ -568,6 +628,11 @@ repository:
     end: (?=[\)\,])
     patterns: 
     - include: '#type-name'
+
+  parameter:
+    patterns:
+    - include: '#typed-parameter'
+    - include: '#untyped-parameter'
 
   parenthesized-parameters:
     name: meta.function.parameters.cpp2

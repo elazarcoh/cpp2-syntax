@@ -18,6 +18,18 @@
       </dict>
       <dict>
         <key>include</key>
+        <string>#type-alias-definition</string>
+      </dict>
+      <dict>
+        <key>include</key>
+        <string>#namespace-alias-definition</string>
+      </dict>
+      <dict>
+        <key>include</key>
+        <string>#type-definition</string>
+      </dict>
+      <dict>
+        <key>include</key>
         <string>#function-definition</string>
       </dict>
       <dict>
@@ -37,25 +49,6 @@
         <string>punctuation.separator.comma.cpp2</string>
         <key>match</key>
         <string>,</string>
-      </dict>
-      <key>punctuation-colon</key>
-      <dict>
-        <key>name</key>
-        <string>punctuation.separator.colon.cpp2</string>
-        <key>match</key>
-        <string>:(?:[\s]|$)</string>
-      </dict>
-      <key>definition</key>
-      <dict>
-        <key>name</key>
-        <string>meta.definition.cpp2</string>
-        <key>patterns</key>
-        <array>
-          <dict>
-            <key>include</key>
-            <string>#function-definition</string>
-          </dict>
-        </array>
       </dict>
       <key>expression</key>
       <dict>
@@ -391,6 +384,106 @@
           </dict>
         </array>
       </dict>
+      <key>type-definition</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.type.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+([_[:alpha:]][_[:alnum:]]*)\s*
+(:)\s*
+\b(type)\b\s*
+([=])
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.type.declaration.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+          <key>3</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.other.type.cpp2</string>
+          </dict>
+          <key>4</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.operator.assignment.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=\})</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#scoped-type-block</string>
+          </dict>
+        </array>
+      </dict>
+      <key>scoped-type-block</key>
+      <dict>
+        <key>begin</key>
+        <string>(\{)</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.curlybrace.open.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(\})</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.curlybrace.close.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#type-block-content</string>
+          </dict>
+        </array>
+      </dict>
+      <key>type-block-content</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#comment</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#operator-definition</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#function-definition</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#variable-definition-typed</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#variable-definition-auto</string>
+          </dict>
+        </array>
+      </dict>
       <key>variable-definition-typed</key>
       <dict>
         <key>name</key>
@@ -526,12 +619,20 @@
           </dict>
         </dict>
         <key>end</key>
-        <string>(?&lt;=[=])</string>
+        <string>(?&lt;=[\};])</string>
         <key>patterns</key>
         <array>
           <dict>
             <key>include</key>
             <string>#function-typing</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#scoped-code-block</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
           </dict>
         </array>
       </dict>
@@ -556,6 +657,52 @@
           <dict>
             <key>include</key>
             <string>#function-type</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#scoped-code-block</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+        </array>
+      </dict>
+      <key>operator-definition</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.operator.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+(operator)
+(=
+|\+|-|\*|/|%|\+=|-=|\*=|/=|%=
+|&lt;&lt;|&gt;&gt;|&amp;|\||\^|&lt;&lt;=|&gt;&gt;=|&amp;=|\|=|\^=
+|&amp;&amp;|\|\||&amp;&amp;=|\|\|=
+|==|!=|&lt;|&gt;|&lt;=|&gt;=|&lt;=&gt;
+)
+(?=\s*[:]\s*[\(])
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.other.operator.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.operator.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=[\};])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#function-typing</string>
           </dict>
           <dict>
             <key>include</key>
@@ -1446,13 +1593,6 @@
           </dict>
         </array>
       </dict>
-      <key>parameter-modifier</key>
-      <dict>
-        <key>name</key>
-        <string>storage.modifier.cpp2</string>
-        <key>match</key>
-        <string>\b(in|out|inout|copy|move|forward)\b</string>
-      </dict>
       <key>parameter-name</key>
       <dict>
         <key>match</key>
@@ -1468,13 +1608,43 @@
           </dict>
         </dict>
       </dict>
-      <key>parameter</key>
+      <key>untyped-parameter</key>
       <dict>
         <key>name</key>
-        <string>meta.parameter.cpp2</string>
+        <string>meta.untyped-parameter.cpp2</string>
         <key>begin</key>
         <string>(?x)
-(?:(\w+)?\s+)?
+(?:\b(in|out|implicit\s+out|inout|copy|move|forward)\b\s+)?
+([_[:alpha:]][_[:alnum:]]*)\s*
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>storage.modifier.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#parameter-name</string>
+              </dict>
+            </array>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[\)\,])</string>
+      </dict>
+      <key>typed-parameter</key>
+      <dict>
+        <key>name</key>
+        <string>meta.typed-parameter.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+(?:\b(in|out|implicit\s+out|inout|copy|move|forward)\b\s+)?
 ([_[:alpha:]][_[:alnum:]]*)\s*
 (:)\s*
 </string>
@@ -1482,13 +1652,8 @@
         <dict>
           <key>1</key>
           <dict>
-            <key>patterns</key>
-            <array>
-              <dict>
-                <key>include</key>
-                <string>#parameter-modifier</string>
-              </dict>
-            </array>
+            <key>name</key>
+            <string>storage.modifier.cpp2</string>
           </dict>
           <key>2</key>
           <dict>
@@ -1513,6 +1678,20 @@
           <dict>
             <key>include</key>
             <string>#type-name</string>
+          </dict>
+        </array>
+      </dict>
+      <key>parameter</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#typed-parameter</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#untyped-parameter</string>
           </dict>
         </array>
       </dict>
