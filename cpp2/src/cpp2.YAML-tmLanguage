@@ -8,7 +8,7 @@ variables:
   colon: ':(?:[\s]|$)'
   coloncolon: '::'
   expression_end: '[;{}()\[\]]|$'
-  parameter_modifier: 'in|out|implicit\s+out|inout|copy|move|forward'
+  parameter_modifier: 'in|out|implicit\s+out|inout|copy|move|forward|virtual'
 
 patterns:
 - include: '#cpp1-block'
@@ -16,6 +16,7 @@ patterns:
 - include: '#type-alias-definition'
 - include: '#namespace-alias-definition'
 - include: '#type-definition'
+- include: '#namespace-definition'
 - include: '#function-definition'
 - include: '#scoped-code-block'
 - include: '#statement'
@@ -135,6 +136,42 @@ repository:
     end: (?<=;)
     patterns:
     - include: '#type'
+  
+  namespace-definition:
+    name: meta.definition.namespace.cpp2
+    begin: |
+      (?x)
+      ({{identifier}})\s*
+      (:)\s*
+      \b(namespace)\b\s*
+      ([=])
+    beginCaptures:
+      "1": { name: entity.name.type.declaration.cpp2 }
+      "2": { name: punctuation.separator.colon.cpp2 }
+      "3": { name: keyword.other.namespace.cpp2 }
+      "4": { name: keyword.operator.assignment.cpp2 }
+    end: (?<=\})
+    patterns:
+    - include: '#scoped-namespace-block'
+
+  scoped-namespace-block:
+    begin: (\{)
+    beginCaptures:
+      "1": { name: punctuation.curlybrace.open.cpp2 }
+    end: (\})
+    endCaptures:
+      "1": { name: punctuation.curlybrace.close.cpp2 }
+    patterns:
+    - include: '#namespace-block-content'
+
+  namespace-block-content:
+    patterns:
+    - include: '#comment'
+    - include: '#namespace-definition'
+    - include: '#type-definition'
+    - include: '#function-definition'
+    - include: '#variable-definition-typed'
+    - include: '#variable-definition-auto'
 
   type-definition:
     name: meta.definition.type.cpp2
@@ -142,16 +179,67 @@ repository:
       (?x)
       ({{identifier}})\s*
       (:)\s*
+      (.*?)\s*
       \b(type)\b\s*
       ([=])
     beginCaptures:
       "1": { name: entity.name.type.declaration.cpp2 }
       "2": { name: punctuation.separator.colon.cpp2 }
-      "3": { name: keyword.other.type.cpp2 }
-      "4": { name: keyword.operator.assignment.cpp2 }
+      "3":
+        patterns:
+        - include: '#annotation'
+        - include: '#type-modifier'
+        - include: '#template'
+      "4": { name: keyword.other.type.cpp2 }
+      "5": { name: keyword.operator.assignment.cpp2 }
     end: (?<=\})
     patterns:
     - include: '#scoped-type-block' 
+
+  type-modifier:
+    name: storage.modifier.cpp2
+    match: \b(final)\b
+
+  annotation:
+    name: meta.annotation.cpp2
+    match: (@)({{identifier}})
+    captures:
+      "1": { name: punctuation.definition.annotation.cpp2 }
+      "2": { name: entity.name.type.annotation.cpp2 }
+  
+  value-template-parameter:
+    begin: ({{identifier}})\s*(:)
+    beginCaptures:
+      "1": { name: storage.constant.template.cpp2 }
+      "2": { name: punctuation.separator.colon.cpp2 }
+    end: (?=[,>])
+    patterns:
+    - include: '#type'
+
+  type-template-parameter:
+    begin: ({{identifier}})
+    beginCaptures:
+      "1": { name: entity.name.type.template.cpp2 }
+    end: (?=[,>])
+    patterns:
+    - include: '#type'
+
+  template-parameter:
+    patterns:
+    - include: '#value-template-parameter'
+    - include: '#type-template-parameter'
+
+  template:
+    name: meta.template.cpp2
+    begin: (<)
+    beginCaptures:
+      "1": { name: punctuation.anglebracket.open.cpp2 }
+    end: (>)
+    endCaptures:
+      "1": { name: punctuation.anglebracket.close.cpp2 }
+    patterns:
+    - include: '#template-parameter'
+    - include: '#comma'
 
   scoped-type-block:
     begin: (\{)

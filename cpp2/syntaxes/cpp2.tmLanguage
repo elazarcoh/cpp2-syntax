@@ -30,6 +30,10 @@
       </dict>
       <dict>
         <key>include</key>
+        <string>#namespace-definition</string>
+      </dict>
+      <dict>
+        <key>include</key>
         <string>#function-definition</string>
       </dict>
       <dict>
@@ -384,15 +388,15 @@
           </dict>
         </array>
       </dict>
-      <key>type-definition</key>
+      <key>namespace-definition</key>
       <dict>
         <key>name</key>
-        <string>meta.definition.type.cpp2</string>
+        <string>meta.definition.namespace.cpp2</string>
         <key>begin</key>
         <string>(?x)
 ([_[:alpha:]][_[:alnum:]]*)\s*
 (:)\s*
-\b(type)\b\s*
+\b(namespace)\b\s*
 ([=])
 </string>
         <key>beginCaptures</key>
@@ -410,7 +414,7 @@
           <key>3</key>
           <dict>
             <key>name</key>
-            <string>keyword.other.type.cpp2</string>
+            <string>keyword.other.namespace.cpp2</string>
           </dict>
           <key>4</key>
           <dict>
@@ -424,7 +428,256 @@
         <array>
           <dict>
             <key>include</key>
+            <string>#scoped-namespace-block</string>
+          </dict>
+        </array>
+      </dict>
+      <key>scoped-namespace-block</key>
+      <dict>
+        <key>begin</key>
+        <string>(\{)</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.curlybrace.open.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(\})</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.curlybrace.close.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#namespace-block-content</string>
+          </dict>
+        </array>
+      </dict>
+      <key>namespace-block-content</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#comment</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#namespace-definition</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#type-definition</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#function-definition</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#variable-definition-typed</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#variable-definition-auto</string>
+          </dict>
+        </array>
+      </dict>
+      <key>type-definition</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.type.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+([_[:alpha:]][_[:alnum:]]*)\s*
+(:)\s*
+(.*?)\s*
+\b(type)\b\s*
+([=])
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.type.declaration.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+          <key>3</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#annotation</string>
+              </dict>
+              <dict>
+                <key>include</key>
+                <string>#type-modifier</string>
+              </dict>
+              <dict>
+                <key>include</key>
+                <string>#template</string>
+              </dict>
+            </array>
+          </dict>
+          <key>4</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.other.type.cpp2</string>
+          </dict>
+          <key>5</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.operator.assignment.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=\})</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
             <string>#scoped-type-block</string>
+          </dict>
+        </array>
+      </dict>
+      <key>type-modifier</key>
+      <dict>
+        <key>name</key>
+        <string>storage.modifier.cpp2</string>
+        <key>match</key>
+        <string>\b(final)\b</string>
+      </dict>
+      <key>annotation</key>
+      <dict>
+        <key>name</key>
+        <string>meta.annotation.cpp2</string>
+        <key>match</key>
+        <string>(@)([_[:alpha:]][_[:alnum:]]*)</string>
+        <key>captures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.definition.annotation.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.type.annotation.cpp2</string>
+          </dict>
+        </dict>
+      </dict>
+      <key>value-template-parameter</key>
+      <dict>
+        <key>begin</key>
+        <string>([_[:alpha:]][_[:alnum:]]*)\s*(:)</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>storage.constant.template.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[,&gt;])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#type</string>
+          </dict>
+        </array>
+      </dict>
+      <key>type-template-parameter</key>
+      <dict>
+        <key>begin</key>
+        <string>([_[:alpha:]][_[:alnum:]]*)</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.type.template.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[,&gt;])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#type</string>
+          </dict>
+        </array>
+      </dict>
+      <key>template-parameter</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#value-template-parameter</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#type-template-parameter</string>
+          </dict>
+        </array>
+      </dict>
+      <key>template</key>
+      <dict>
+        <key>name</key>
+        <string>meta.template.cpp2</string>
+        <key>begin</key>
+        <string>(&lt;)</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.anglebracket.open.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(&gt;)</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.anglebracket.close.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#template-parameter</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#comma</string>
           </dict>
         </array>
       </dict>
@@ -1614,7 +1867,7 @@
         <string>meta.untyped-parameter.cpp2</string>
         <key>begin</key>
         <string>(?x)
-(?:\b(in|out|implicit\s+out|inout|copy|move|forward)\b\s+)?
+(?:\b(in|out|implicit\s+out|inout|copy|move|forward|virtual)\b\s+)?
 ([_[:alpha:]][_[:alnum:]]*)\s*
 </string>
         <key>beginCaptures</key>
@@ -1644,7 +1897,7 @@
         <string>meta.typed-parameter.cpp2</string>
         <key>begin</key>
         <string>(?x)
-(?:\b(in|out|implicit\s+out|inout|copy|move|forward)\b\s+)?
+(?:\b(in|out|implicit\s+out|inout|copy|move|forward|virtual)\b\s+)?
 ([_[:alpha:]][_[:alnum:]]*)\s*
 (:)\s*
 </string>
