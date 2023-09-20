@@ -113,6 +113,10 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#known-std-symbols</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#variable-name</string>
           </dict>
         </array>
@@ -2163,6 +2167,77 @@
                 <string>source.cpp</string>
               </dict>
             </array>
+          </dict>
+        </array>
+      </dict>
+      <key>known-std-symbols</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>name</key>
+            <string>meta.entity.known-std-variable-name.cpp2</string>
+            <key>match</key>
+            <string>(?x)
+(std)\s*
+(::)\s*
+(cout|endl|cin|cerr|clog
+|wcout|wendl|wcin|wcerr|wclog
+)\b
+</string>
+            <key>captures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.namespace.cpp2</string>
+              </dict>
+              <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>punctuation.static-accessor.cpp2</string>
+              </dict>
+              <key>3</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.variable.cpp2</string>
+              </dict>
+            </dict>
+          </dict>
+          <dict>
+            <key>name</key>
+            <string>meta.entity.known-std-type-name.cpp2</string>
+            <key>match</key>
+            <string>(?x)
+(std)\s*
+(::)\s*
+(string|vector|map|set|list|queue|stack|priority_queue
+|pair|tuple
+|function
+|thread
+|mutex|lock_guard|unique_lock
+|condition_variable
+|atomic
+)\b
+</string>
+            <key>captures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.namespace.cpp2</string>
+              </dict>
+              <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>punctuation.static-accessor.cpp2</string>
+              </dict>
+              <key>3</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.type.cpp2</string>
+              </dict>
+            </dict>
           </dict>
         </array>
       </dict>

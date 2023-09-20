@@ -45,6 +45,7 @@ repository:
     - include: '#namespace-alias-definition'
     - include: '#variable-definition-typed'
     - include: '#variable-definition-auto'
+    - include: '#known-std-symbols'
     - include: '#variable-name'
 
   return-statement:
@@ -830,5 +831,37 @@ repository:
         '0': { name: comment.block.end-of.cpp1.cpp2 }
       patterns:
       - include: 'source.cpp'
+
+  known-std-symbols:
+    patterns:
+      - name: meta.entity.known-std-variable-name.cpp2
+        match: |
+          (?x)
+          (std)\s*
+          (::)\s*
+          (cout|endl|cin|cerr|clog
+          |wcout|wendl|wcin|wcerr|wclog
+          )\b
+        captures:
+          '1': { name: entity.name.namespace.cpp2 }
+          '2': { name: punctuation.static-accessor.cpp2 }
+          '3': { name: entity.name.variable.cpp2 }
+      - name: meta.entity.known-std-type-name.cpp2
+        match: |
+          (?x)
+          (std)\s*
+          (::)\s*
+          (string|vector|map|set|list|queue|stack|priority_queue
+          |pair|tuple
+          |function
+          |thread
+          |mutex|lock_guard|unique_lock
+          |condition_variable
+          |atomic
+          )\b
+        captures:
+          '1': { name: entity.name.namespace.cpp2 }
+          '2': { name: punctuation.static-accessor.cpp2 }
+          '3': { name: entity.name.type.cpp2 }
 
 scopeName: source.cpp2
