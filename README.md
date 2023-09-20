@@ -2,7 +2,17 @@
 
 This extension provides syntax highlighting for the experimental [cpp2](https://github.com/hsutter/cppfront) language.
 
-It support all the pure-cpp2 grammar to date (with the disclaimer that probably there are some bugs).
+It support most of the pure-cpp2 grammar to date (new syntax since last version is still on-going).
+
+It supports highlighting of plain C++ in cpp2 source code, but we have to mark the C++ block with a special comment:
+    
+```cpp
+/* lang:cpp */
+int main() {
+    return 0;
+}
+/* lang:end */
+```
 
 For any issues, please file them on the [GitHub repo](https://github.com/elazarcoh/cpp2-syntax).
 

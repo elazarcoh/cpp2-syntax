@@ -1,0 +1,11 @@
+{
+    "cpp1": {
+        "scope": "source.cpp2",
+        "prefix": "cpp1",
+        "body": [
+            "/* lang:cpp */",
+            "$0",
+            "/* lang:end */"
+        ]
+    }
+}

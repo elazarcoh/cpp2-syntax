@@ -29,7 +29,10 @@
             {
                 "language": "cpp2",
                 "scopeName": "source.cpp2",
-                "path": "./syntaxes/cpp2.tmLanguage"
+                "path": "./syntaxes/cpp2.tmLanguage",
+                "embeddedLanguages": {
+                    "meta.embedded.block.cpp1": "javascript"
+                }
             }
         ],
         "configurationDefaults": {
@@ -65,7 +68,13 @@
                     }
                 ]
             }
-        }
+        },
+        "snippets": [
+            {
+                "language": "cpp2",
+                "path": "./snippets/cpp2.json"
+            }
+        ]
     },
     "scripts": {
         "build": "node ../utils/build.js",

@@ -10,6 +10,7 @@ variables:
   expression_end: '[;{}()\[\]]|$'
 
 patterns:
+- include: '#cpp1-block'
 - include: '#comment'
 - include: '#function-definition'
 - include: '#scoped-code-block'
@@ -219,6 +220,7 @@ repository:
 
   code-block-content:
     patterns:
+    - include: '#cpp1-block'
     - include: '#comment'
     - include: '#statement'
     - include: '#scoped-code-block'
@@ -816,5 +818,17 @@ repository:
     - include: "#character"
     - include: "#nullptr"
     - include: "#boolean"
+
+  cpp1-block:
+    patterns:
+    - name: meta.embedded.block.cpp1
+      begin: /\*\s*lang:cpp\s*\*/
+      beginCaptures:
+        '0': { name: comment.block.start-of.cpp1.cpp2 }
+      end: /\*\s*lang:end\s*\*/
+      endCaptures:
+        '0': { name: comment.block.end-of.cpp1.cpp2 }
+      patterns:
+      - include: 'source.cpp'
 
 scopeName: source.cpp2

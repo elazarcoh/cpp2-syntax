@@ -10,6 +10,10 @@
     <array>
       <dict>
         <key>include</key>
+        <string>#cpp1-block</string>
+      </dict>
+      <dict>
+        <key>include</key>
         <string>#comment</string>
       </dict>
       <dict>
@@ -593,6 +597,10 @@
       <dict>
         <key>patterns</key>
         <array>
+          <dict>
+            <key>include</key>
+            <string>#cpp1-block</string>
+          </dict>
           <dict>
             <key>include</key>
             <string>#comment</string>
@@ -2118,6 +2126,43 @@
           <dict>
             <key>include</key>
             <string>#boolean</string>
+          </dict>
+        </array>
+      </dict>
+      <key>cpp1-block</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>name</key>
+            <string>meta.embedded.block.cpp1</string>
+            <key>begin</key>
+            <string>/\*\s*lang:cpp\s*\*/</string>
+            <key>beginCaptures</key>
+            <dict>
+              <key>0</key>
+              <dict>
+                <key>name</key>
+                <string>comment.block.start-of.cpp1.cpp2</string>
+              </dict>
+            </dict>
+            <key>end</key>
+            <string>/\*\s*lang:end\s*\*/</string>
+            <key>endCaptures</key>
+            <dict>
+              <key>0</key>
+              <dict>
+                <key>name</key>
+                <string>comment.block.end-of.cpp1.cpp2</string>
+              </dict>
+            </dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>source.cpp</string>
+              </dict>
+            </array>
           </dict>
         </array>
       </dict>
