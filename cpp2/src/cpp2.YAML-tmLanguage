@@ -77,9 +77,12 @@ repository:
     - include: '#else'
     - include: '#while'
     - include: '#labeled-while'
+    - include: '#continue'
+    - include: '#break'
     - include: '#next'
     - include: '#for'
     - include: '#do'
+    - include: '#labeled-do'
     - include: '#expression'
 
   namespace-access:
@@ -524,6 +527,26 @@ repository:
     end: (?=[\{;]|next)
     patterns:
     - include: '#expression'
+  
+  continue:
+    name: meta.control.continue.cpp2
+    match: |
+      (?x)
+      \b(continue)\s*
+      \b({{identifier}})?
+    captures:
+      "1": { name: keyword.control.continue.cpp2 }
+      "2": { name: entity.name.label.cpp2 }
+
+  break:
+    name: meta.control.break.cpp2
+    match: |
+      (?x)
+      \b(break)\s*
+      \b({{identifier}})?
+    captures:
+      "1": { name: keyword.control.break.cpp2 }
+      "2": { name: entity.name.label.cpp2 }
 
   next:
     name: meta.control.next.cpp2
@@ -533,7 +556,20 @@ repository:
     end: (?=[\{;])
     patterns:
     - include: '#expression'
-  
+
+  labeled-do:
+    name: meta.control.while.cpp2
+    begin: |
+      (?x)
+      ({{identifier}})\s*
+      ({{colon}})
+      \b(do)\b
+    beginCaptures:
+      "1": { name: entity.name.label.cpp2 }
+      "2": { name: punctuation.separator.colon.cpp2 }
+      "3": { name: keyword.control.do.cpp2 }
+    end: (?=[\{])
+
   do:
     name: meta.control.do.cpp2
     begin: \b(do)\b

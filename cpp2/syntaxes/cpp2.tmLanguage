@@ -222,6 +222,14 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#continue</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#break</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#next</string>
           </dict>
           <dict>
@@ -231,6 +239,10 @@
           <dict>
             <key>include</key>
             <string>#do</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#labeled-do</string>
           </dict>
           <dict>
             <key>include</key>
@@ -1417,6 +1429,52 @@
           </dict>
         </array>
       </dict>
+      <key>continue</key>
+      <dict>
+        <key>name</key>
+        <string>meta.control.continue.cpp2</string>
+        <key>match</key>
+        <string>(?x)
+\b(continue)\s*
+\b([_[:alpha:]][_[:alnum:]]*)?
+</string>
+        <key>captures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.continue.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.label.cpp2</string>
+          </dict>
+        </dict>
+      </dict>
+      <key>break</key>
+      <dict>
+        <key>name</key>
+        <string>meta.control.break.cpp2</string>
+        <key>match</key>
+        <string>(?x)
+\b(break)\s*
+\b([_[:alpha:]][_[:alnum:]]*)?
+</string>
+        <key>captures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.break.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.label.cpp2</string>
+          </dict>
+        </dict>
+      </dict>
       <key>next</key>
       <dict>
         <key>name</key>
@@ -1440,6 +1498,37 @@
             <string>#expression</string>
           </dict>
         </array>
+      </dict>
+      <key>labeled-do</key>
+      <dict>
+        <key>name</key>
+        <string>meta.control.while.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+([_[:alpha:]][_[:alnum:]]*)\s*
+(:(?:[\s]|$))
+\b(do)\b
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.label.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+          <key>3</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.do.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[\{])</string>
       </dict>
       <key>do</key>
       <dict>
