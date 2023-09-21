@@ -15,6 +15,7 @@ patterns:
 - include: '#comment'
 - include: '#type-alias-definition'
 - include: '#namespace-alias-definition'
+- include: '#enum-definition'
 - include: '#type-definition'
 - include: '#namespace-definition'
 - include: '#function-definition'
@@ -43,6 +44,18 @@ repository:
     - include: '#variable-definition-auto'
     - include: '#known-std-symbols'
     - include: '#variable-name'
+    - include: '#parenthesized-expression'
+  
+  parenthesized-expression:
+    name: meta.parenthesized-expression.cpp2
+    begin: \(
+    beginCaptures:
+      '0': {name: punctuation.definition.expression.begin.cpp2}
+    end: \)
+    endCaptures:
+      '0': {name: punctuation.definition.expression.end.cpp2}
+    patterns:
+    - include: '#expression'
 
   return-statement:
     name: meta.return-statement.cpp2
@@ -172,6 +185,58 @@ repository:
     - include: '#function-definition'
     - include: '#variable-definition-typed'
     - include: '#variable-definition-auto'
+
+  enum-definition:
+    name: meta.definition.enum.cpp2
+    begin: |
+      (?x)
+      ({{identifier}})\s*
+      (:)\s*
+      (@enum|@flag_enum)\s*
+      \b(type)\b\s*
+      ([=])
+    beginCaptures:
+      "1": { name: entity.name.type.declaration.cpp2 }
+      "2": { name: punctuation.separator.colon.cpp2 }
+      "3":
+        patterns:
+        - include: '#annotation'
+      "4": { name: keyword.other.type.cpp2 }
+      "5": { name: keyword.operator.assignment.cpp2 }
+    end: (?<=\})
+    patterns:
+    - include: '#scoped-enum-block' 
+
+  scoped-enum-block:
+    begin: (\{)
+    beginCaptures:
+      "1": { name: punctuation.curlybrace.open.cpp2 }
+    end: (\})
+    endCaptures:
+      "1": { name: punctuation.curlybrace.close.cpp2 }
+    patterns:
+    - include: '#enum-block-content'
+
+  enum-block-content:
+    patterns:
+    - include: '#comment'
+    - match: |
+        (?x)
+        ({{identifier}})\s*
+        ([;])
+      captures:
+        "1": { name: variable.other.enummember.cpp2 }
+        "2": { name: punctuation.terminator.statement.cpp2 }
+    - begin: |
+        (?x)
+        ({{identifier}})\s*
+        (:=)\s*
+      beginCaptures:
+        "1": { name: variable.other.enummember.cpp2 }
+        "2": { name: keyword.operator.assignment.cpp2 }
+      end: (?=[;])
+      patterns:
+      - include: '#expression'
 
   type-definition:
     name: meta.definition.type.cpp2
@@ -574,13 +639,14 @@ repository:
     - include: '#expression'
 
   is:
-    name: meta.control.inspect.is.cpp2
+    name: meta.control.is.cpp2
     begin: \b(is)\b\s*
     beginCaptures:
-      "1": { name: keyword.control.inspect.is.cpp2 }
-    end: (?=[=])
+      "1": { name: keyword.control.is.cpp2 }
+    # `=` in inspect, `{` in if.
+    end: (?=[\{=])
     patterns:
-    - include: '#type'
+    - include: '#expression'
 
   as:
     name: meta.operator.as.cpp2

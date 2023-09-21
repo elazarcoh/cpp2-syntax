@@ -26,6 +26,10 @@
       </dict>
       <dict>
         <key>include</key>
+        <string>#enum-definition</string>
+      </dict>
+      <dict>
+        <key>include</key>
         <string>#type-definition</string>
       </dict>
       <dict>
@@ -115,6 +119,42 @@
           <dict>
             <key>include</key>
             <string>#variable-name</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#parenthesized-expression</string>
+          </dict>
+        </array>
+      </dict>
+      <key>parenthesized-expression</key>
+      <dict>
+        <key>name</key>
+        <string>meta.parenthesized-expression.cpp2</string>
+        <key>begin</key>
+        <string>\(</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.definition.expression.begin.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>\)</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.definition.expression.end.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
           </dict>
         </array>
       </dict>
@@ -489,6 +529,150 @@
           <dict>
             <key>include</key>
             <string>#variable-definition-auto</string>
+          </dict>
+        </array>
+      </dict>
+      <key>enum-definition</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.enum.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+([_[:alpha:]][_[:alnum:]]*)\s*
+(:)\s*
+(@enum|@flag_enum)\s*
+\b(type)\b\s*
+([=])
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.type.declaration.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+          <key>3</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#annotation</string>
+              </dict>
+            </array>
+          </dict>
+          <key>4</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.other.type.cpp2</string>
+          </dict>
+          <key>5</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.operator.assignment.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=\})</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#scoped-enum-block</string>
+          </dict>
+        </array>
+      </dict>
+      <key>scoped-enum-block</key>
+      <dict>
+        <key>begin</key>
+        <string>(\{)</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.curlybrace.open.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(\})</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.curlybrace.close.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#enum-block-content</string>
+          </dict>
+        </array>
+      </dict>
+      <key>enum-block-content</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#comment</string>
+          </dict>
+          <dict>
+            <key>match</key>
+            <string>(?x)
+([_[:alpha:]][_[:alnum:]]*)\s*
+([;])
+</string>
+            <key>captures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>variable.other.enummember.cpp2</string>
+              </dict>
+              <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>punctuation.terminator.statement.cpp2</string>
+              </dict>
+            </dict>
+          </dict>
+          <dict>
+            <key>begin</key>
+            <string>(?x)
+([_[:alpha:]][_[:alnum:]]*)\s*
+(:=)\s*
+</string>
+            <key>beginCaptures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>variable.other.enummember.cpp2</string>
+              </dict>
+              <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>keyword.operator.assignment.cpp2</string>
+              </dict>
+            </dict>
+            <key>end</key>
+            <string>(?=[;])</string>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#expression</string>
+              </dict>
+            </array>
           </dict>
         </array>
       </dict>
@@ -1574,7 +1758,7 @@
       <key>is</key>
       <dict>
         <key>name</key>
-        <string>meta.control.inspect.is.cpp2</string>
+        <string>meta.control.is.cpp2</string>
         <key>begin</key>
         <string>\b(is)\b\s*</string>
         <key>beginCaptures</key>
@@ -1582,16 +1766,16 @@
           <key>1</key>
           <dict>
             <key>name</key>
-            <string>keyword.control.inspect.is.cpp2</string>
+            <string>keyword.control.is.cpp2</string>
           </dict>
         </dict>
         <key>end</key>
-        <string>(?=[=])</string>
+        <string>(?=[\{=])</string>
         <key>patterns</key>
         <array>
           <dict>
             <key>include</key>
-            <string>#type</string>
+            <string>#expression</string>
           </dict>
         </array>
       </dict>
