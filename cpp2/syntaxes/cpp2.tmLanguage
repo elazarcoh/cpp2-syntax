@@ -133,6 +133,20 @@
         <key>patterns</key>
         <array>
           <dict>
+            <key>name</key>
+            <string>meta.auto-type.cpp2</string>
+            <key>match</key>
+            <string>\b(_)\b</string>
+            <key>captures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>keyword.other.auto.cpp2</string>
+              </dict>
+            </dict>
+          </dict>
+          <dict>
             <key>include</key>
             <string>#decltype</string>
           </dict>
@@ -2127,11 +2141,37 @@
           </dict>
           <dict>
             <key>include</key>
-            <string>#function-return-type-separator</string>
+            <string>#function-trailing-return</string>
           </dict>
+        </array>
+      </dict>
+      <key>function-trailing-return</key>
+      <dict>
+        <key>begin</key>
+        <string>(?x)
+(-&gt;)\s*
+(forward)?\s*
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.function-return-type.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>storage.modifier.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[=;])</string>
+        <key>patterns</key>
+        <array>
           <dict>
             <key>include</key>
-            <string>#type</string>
+            <string>#type-expression</string>
           </dict>
         </array>
       </dict>

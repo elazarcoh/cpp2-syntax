@@ -9,6 +9,7 @@ variables:
   coloncolon: '::'
   expression_end: '[;{}()\[\]]|$'
   parameter_modifier: 'in|out|implicit\s+out|inout|copy|move|forward|virtual'
+  return_modifier: 'forward'
 
 patterns:
 - include: '#cpp1-block'
@@ -49,6 +50,10 @@ repository:
   type-expression:
     name: meta.type-expression.cpp2
     patterns:
+    - name: meta.auto-type.cpp2
+      match: \b(_)\b
+      captures:
+        '1': { name: keyword.other.auto.cpp2 }
     - include: '#decltype'
     - include: '#type'
   
@@ -784,8 +789,21 @@ repository:
     end: (?=[=;])
     patterns:
     - include: '#parenthesized-parameters'
-    - include: '#function-return-type-separator'
-    - include: '#type'
+    - include: '#function-trailing-return'
+  
+
+
+  function-trailing-return:
+    begin: |
+      (?x)
+      (->)\s*
+      ({{return_modifier}})?\s*
+    beginCaptures:
+      "1": { name: punctuation.separator.function-return-type.cpp2 }
+      "2": { name: storage.modifier.cpp2 }
+    end: (?=[=;])
+    patterns:
+    - include: '#type-expression'
 
   parameter-name:
     match: |
@@ -1126,7 +1144,7 @@ repository:
           '3': { name: entity.name.type.cpp2 }
       
   decltype:
-    name: keyword.other.decltype.cpp
+    name: keyword.other.decltype.cpp  
     begin: |
       (?x)
       \b(decltype)\b\s*
