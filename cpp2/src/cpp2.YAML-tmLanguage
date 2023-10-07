@@ -46,6 +46,12 @@ repository:
     - include: '#variable-name'
     - include: '#parenthesized-expression'
   
+  type-expression:
+    name: meta.type-expression.cpp2
+    patterns:
+    - include: '#decltype'
+    - include: '#type'
+  
   parenthesized-expression:
     name: meta.parenthesized-expression.cpp2
     begin: \(
@@ -763,7 +769,7 @@ repository:
     endCaptures:
       "1": { name: punctuation.template.end.cpp2 }
     patterns:
-    - include: '#type'
+    - include: '#type-expression'
     - include: '#comma'
 
   function-return-type-separator:
@@ -1118,5 +1124,17 @@ repository:
           '1': { name: entity.name.namespace.cpp2 }
           '2': { name: punctuation.static-accessor.cpp2 }
           '3': { name: entity.name.type.cpp2 }
+      
+  decltype:
+    name: keyword.other.decltype.cpp
+    begin: |
+      (?x)
+      \b(decltype)\b\s*
+      (\()
+    beginCaptures:
+      "1": { name: storage.type.decltype.cpp }
+    end: (\))
+    patterns:
+    - include: '#expression'
 
 scopeName: source.cpp2

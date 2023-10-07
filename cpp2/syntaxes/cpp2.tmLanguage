@@ -126,6 +126,22 @@
           </dict>
         </array>
       </dict>
+      <key>type-expression</key>
+      <dict>
+        <key>name</key>
+        <string>meta.type-expression.cpp2</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#decltype</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#type</string>
+          </dict>
+        </array>
+      </dict>
       <key>parenthesized-expression</key>
       <dict>
         <key>name</key>
@@ -2078,7 +2094,7 @@
         <array>
           <dict>
             <key>include</key>
-            <string>#type</string>
+            <string>#type-expression</string>
           </dict>
           <dict>
             <key>include</key>
@@ -2943,6 +2959,33 @@
                 <string>entity.name.type.cpp2</string>
               </dict>
             </dict>
+          </dict>
+        </array>
+      </dict>
+      <key>decltype</key>
+      <dict>
+        <key>name</key>
+        <string>keyword.other.decltype.cpp</string>
+        <key>begin</key>
+        <string>(?x)
+\b(decltype)\b\s*
+(\()
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>storage.type.decltype.cpp</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(\))</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
           </dict>
         </array>
       </dict>
