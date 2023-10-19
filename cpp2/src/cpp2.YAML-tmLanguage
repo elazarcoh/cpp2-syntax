@@ -5,7 +5,7 @@ name: cpp2
 variables:
   identifier: '[_[:alpha:]][_[:alnum:]]*'
   namespaced_identifier: '((?:{{identifier}}::)*)({{identifier}})'
-  colon: ':(?:[\s]|$)'
+  colon: ':(?:[\s]+|$)'
   coloncolon: '::'
   expression_end: '[;{}()\[\]]|$'
   parameter_modifier: 'in|out|implicit\s+out|inout|copy|move|forward|virtual'
@@ -92,6 +92,7 @@ repository:
     - include: '#break'
     - include: '#next'
     - include: '#for'
+    - include: '#labeled-for'
     - include: '#do'
     - include: '#labeled-do'
     - include: '#expression'
@@ -564,12 +565,12 @@ repository:
     begin: \b(next)\b
     beginCaptures:
       "1": { name: keyword.control.next.cpp2 }
-    end: (?=[\{;])
+    end: (?=[\{;]|do)
     patterns:
     - include: '#expression'
 
   labeled-do:
-    name: meta.control.while.cpp2
+    name: meta.control.labeled-do.cpp2
     begin: |
       (?x)
       ({{identifier}})\s*
@@ -580,6 +581,8 @@ repository:
       "2": { name: punctuation.separator.colon.cpp2 }
       "3": { name: keyword.control.do.cpp2 }
     end: (?=[\{])
+    patterns:
+    - include: '#expression'
 
   do:
     name: meta.control.do.cpp2
@@ -587,16 +590,32 @@ repository:
     beginCaptures:
       "1": { name: keyword.control.do.cpp2 }
     end: (?=[\{])
+    patterns:
+    - include: '#expression'
+
+  labeled-for:
+    name: meta.control.labeled-for.cpp2
+    begin: |
+      (?x)
+      ({{identifier}})\s*
+      ({{colon}})
+      \b(for)\b
+    beginCaptures:
+      "1": { name: entity.name.label.cpp2 }
+      "2": { name: punctuation.separator.colon.cpp2 }
+      "3": { name: keyword.control.for.cpp2 }
+    end: (?=[\{]|next|do)
+    patterns:
+    - include: '#expression'
+    - include: '#unnamed-function'
 
   for:
     name: meta.control.for.cpp2
     begin: \b(for)\b
     beginCaptures:
       "1": { name: keyword.control.for.cpp2 }
-    end: (?=[\}])
+    end: (?=[\{]|next|do)
     patterns:
-    - match: \b(do)\b
-      name: keyword.control.do.cpp2
     - include: '#expression'
     - include: '#unnamed-function'
 

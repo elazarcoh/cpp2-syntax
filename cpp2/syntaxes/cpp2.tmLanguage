@@ -268,6 +268,10 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#labeled-for</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#do</string>
           </dict>
           <dict>
@@ -344,7 +348,7 @@
         <key>begin</key>
         <string>(?x)
 ((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
-(:(?:[\s]|$))\s*
+(:(?:[\s]+|$))\s*
 \b(namespace)\b\s*
 (==)\s*
 </string>
@@ -423,7 +427,7 @@
         <key>begin</key>
         <string>(?x)
 ((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
-(:(?:[\s]|$))\s*
+(:(?:[\s]+|$))\s*
 \b(type)\b\s*
 (==)\s*
 </string>
@@ -970,7 +974,7 @@
         <key>begin</key>
         <string>(?x)
 ((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
-(?=:(?:[\s]|$))
+(?=:(?:[\s]+|$))
 </string>
         <key>beginCaptures</key>
         <dict>
@@ -1404,7 +1408,7 @@
         <key>begin</key>
         <string>(?x)
 ([_[:alpha:]][_[:alnum:]]*)\s*
-(:(?:[\s]|$))
+(:(?:[\s]+|$))
 \b(while)\b
 </string>
         <key>beginCaptures</key>
@@ -1520,7 +1524,7 @@
           </dict>
         </dict>
         <key>end</key>
-        <string>(?=[\{;])</string>
+        <string>(?=[\{;]|do)</string>
         <key>patterns</key>
         <array>
           <dict>
@@ -1532,11 +1536,11 @@
       <key>labeled-do</key>
       <dict>
         <key>name</key>
-        <string>meta.control.while.cpp2</string>
+        <string>meta.control.labeled-do.cpp2</string>
         <key>begin</key>
         <string>(?x)
 ([_[:alpha:]][_[:alnum:]]*)\s*
-(:(?:[\s]|$))
+(:(?:[\s]+|$))
 \b(do)\b
 </string>
         <key>beginCaptures</key>
@@ -1559,6 +1563,13 @@
         </dict>
         <key>end</key>
         <string>(?=[\{])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+        </array>
       </dict>
       <key>do</key>
       <dict>
@@ -1576,6 +1587,55 @@
         </dict>
         <key>end</key>
         <string>(?=[\{])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+        </array>
+      </dict>
+      <key>labeled-for</key>
+      <dict>
+        <key>name</key>
+        <string>meta.control.labeled-for.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+([_[:alpha:]][_[:alnum:]]*)\s*
+(:(?:[\s]+|$))
+\b(for)\b
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.label.cpp2</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+          <key>3</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.control.for.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?=[\{]|next|do)</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#unnamed-function</string>
+          </dict>
+        </array>
       </dict>
       <key>for</key>
       <dict>
@@ -1592,15 +1652,9 @@
           </dict>
         </dict>
         <key>end</key>
-        <string>(?=[\}])</string>
+        <string>(?=[\{]|next|do)</string>
         <key>patterns</key>
         <array>
-          <dict>
-            <key>match</key>
-            <string>\b(do)\b</string>
-            <key>name</key>
-            <string>keyword.control.do.cpp2</string>
-          </dict>
           <dict>
             <key>include</key>
             <string>#expression</string>
