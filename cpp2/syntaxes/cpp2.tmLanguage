@@ -2161,8 +2161,19 @@
         <key>patterns</key>
         <array>
           <dict>
-            <key>include</key>
-            <string>#type-expression</string>
+            <key>name</key>
+            <string>meta.type.template-instance-parameter.cpp2</string>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#type-expression</string>
+              </dict>
+              <dict>
+                <key>include</key>
+                <string>#expression</string>
+              </dict>
+            </array>
           </dict>
           <dict>
             <key>include</key>

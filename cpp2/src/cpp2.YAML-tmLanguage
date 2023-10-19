@@ -793,7 +793,10 @@ repository:
     endCaptures:
       "1": { name: punctuation.template.end.cpp2 }
     patterns:
-    - include: '#type-expression'
+    - name: meta.type.template-instance-parameter.cpp2
+      patterns:
+      - include: '#type-expression'
+      - include: '#expression'
     - include: '#comma'
 
   function-return-type-separator:
