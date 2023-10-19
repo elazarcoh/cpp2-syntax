@@ -156,7 +156,7 @@ repository:
       "1": 
         patterns: 
         - include: '#namespace-access'
-      "2": { name: entity.name.variable.declaration.cpp2 }
+      "2": { name: entity.name.type.declaration.cpp2 }
       "3": { name: punctuation.separator.colon.cpp2 }
       "4": { name: keyword.other.type-alias.cpp2 }
       "5": { name: keyword.operator.assignment.cpp2 }
