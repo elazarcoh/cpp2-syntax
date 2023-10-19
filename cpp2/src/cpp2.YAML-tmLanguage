@@ -7,9 +7,11 @@ variables:
   namespaced_identifier: '((?:{{identifier}}::)*)({{identifier}})'
   colon: ':(?:[\s]+|$)'
   coloncolon: '::'
-  expression_end: '[;{}()\[\]]|$'
+  expression_end: '[;{}()\[\]<=>]|$'
   parameter_modifier: 'in|out|implicit\s+out|inout|copy|move|forward|virtual'
   return_modifier: 'forward'
+  member_modifier: 'public|private|protected'
+  template_begin: '<[^<>=]'
 
 patterns:
 - include: '#cpp1-block'
@@ -311,7 +313,7 @@ repository:
 
   template:
     name: meta.template.cpp2
-    begin: (<)
+    begin: ({{template_begin}})
     beginCaptures:
       "1": { name: punctuation.anglebracket.open.cpp2 }
     end: (>)
@@ -331,9 +333,14 @@ repository:
     patterns:
     - include: '#type-block-content'
 
+  member-modifier:
+    name: storage.modifier.cpp2
+    match: \b({{member_modifier}})\b
+
   type-block-content:
     patterns:
     - include: '#comment'
+    - include: '#member-modifier'
     - include: '#operator-definition'
     - include: '#function-definition'
     - include: '#variable-definition-typed'
@@ -655,7 +662,7 @@ repository:
   
   type-inside-angle-brackets:
     name: meta.type.inside-angle-brackets.cpp2
-    begin: (<)
+    begin: ({{template_begin}})
     beginCaptures:
       "1": { name: punctuation.anglebracket.open.cpp2 }
     end: (>)
@@ -782,7 +789,7 @@ repository:
     begin: |
       (?x)
       {{namespaced_identifier}}\s*
-      (<)
+      ({{template_begin}})
     beginCaptures:
       "1": 
         patterns: 

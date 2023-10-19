@@ -880,7 +880,7 @@
         <key>name</key>
         <string>meta.template.cpp2</string>
         <key>begin</key>
-        <string>(&lt;)</string>
+        <string>(&lt;[^&lt;&gt;=])</string>
         <key>beginCaptures</key>
         <dict>
           <key>1</key>
@@ -941,6 +941,13 @@
           </dict>
         </array>
       </dict>
+      <key>member-modifier</key>
+      <dict>
+        <key>name</key>
+        <string>storage.modifier.cpp2</string>
+        <key>match</key>
+        <string>\b(public|private|protected)\b</string>
+      </dict>
       <key>type-block-content</key>
       <dict>
         <key>patterns</key>
@@ -948,6 +955,10 @@
           <dict>
             <key>include</key>
             <string>#comment</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#member-modifier</string>
           </dict>
           <dict>
             <key>include</key>
@@ -1789,7 +1800,7 @@
         <key>name</key>
         <string>meta.type.inside-angle-brackets.cpp2</string>
         <key>begin</key>
-        <string>(&lt;)</string>
+        <string>(&lt;[^&lt;&gt;=])</string>
         <key>beginCaptures</key>
         <dict>
           <key>1</key>
@@ -1967,7 +1978,7 @@
           </dict>
         </dict>
         <key>end</key>
-        <string>(?=[;{}()\[\]]|$)</string>
+        <string>(?=[;{}()\[\]&lt;=&gt;]|$)</string>
         <key>patterns</key>
         <array>
           <dict>
@@ -2123,7 +2134,7 @@
         <key>begin</key>
         <string>(?x)
 ((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
-(&lt;)
+(&lt;[^&lt;&gt;=])
 </string>
         <key>beginCaptures</key>
         <dict>
