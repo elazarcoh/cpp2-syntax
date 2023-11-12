@@ -122,6 +122,10 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#tuple</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#parenthesized-expression</string>
           </dict>
         </array>
@@ -148,11 +152,55 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#type-tuple</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#decltype</string>
           </dict>
           <dict>
             <key>include</key>
             <string>#type</string>
+          </dict>
+        </array>
+      </dict>
+      <key>type-tuple</key>
+      <dict>
+        <key>name</key>
+        <string>meta.type.tuple.cpp2</string>
+        <key>begin</key>
+        <string>\(</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.definition.tuple.begin.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>\)</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.definition.tuple.end.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#comment</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#typed-parameter</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#punctuation-comma</string>
           </dict>
         </array>
       </dict>
@@ -319,7 +367,7 @@
       <key>variable-name</key>
       <dict>
         <key>name</key>
-        <string>meta.definition.variable.cpp2</string>
+        <string>meta.entity.variable.cpp2</string>
         <key>match</key>
         <string>((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)</string>
         <key>captures</key>
@@ -428,6 +476,7 @@
         <string>(?x)
 ((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
 (:(?:[\s]+|$))\s*
+(.*?)\s*
 \b(type)\b\s*
 (==)\s*
 </string>
@@ -455,10 +504,20 @@
           </dict>
           <key>4</key>
           <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#template</string>
+              </dict>
+            </array>
+          </dict>
+          <key>5</key>
+          <dict>
             <key>name</key>
             <string>keyword.other.type-alias.cpp2</string>
           </dict>
-          <key>5</key>
+          <key>6</key>
           <dict>
             <key>name</key>
             <string>keyword.operator.assignment.cpp2</string>
@@ -509,7 +568,7 @@
           </dict>
         </dict>
         <key>end</key>
-        <string>(?&lt;=\})</string>
+        <string>(?&lt;=})</string>
         <key>patterns</key>
         <array>
           <dict>
@@ -554,11 +613,23 @@
         <array>
           <dict>
             <key>include</key>
+            <string>#cpp1-block</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#comment</string>
           </dict>
           <dict>
             <key>include</key>
-            <string>#namespace-definition</string>
+            <string>#type-alias-definition</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#namespace-alias-definition</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#enum-definition</string>
           </dict>
           <dict>
             <key>include</key>
@@ -566,15 +637,19 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#namespace-definition</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#function-definition</string>
           </dict>
           <dict>
             <key>include</key>
-            <string>#variable-definition-typed</string>
+            <string>#scoped-code-block</string>
           </dict>
           <dict>
             <key>include</key>
-            <string>#variable-definition-auto</string>
+            <string>#statement</string>
           </dict>
         </array>
       </dict>
@@ -880,7 +955,7 @@
         <key>name</key>
         <string>meta.template.cpp2</string>
         <key>begin</key>
-        <string>(&lt;[^&lt;&gt;=])</string>
+        <string>(&lt;(?![&lt;&gt;=]))</string>
         <key>beginCaptures</key>
         <dict>
           <key>1</key>
@@ -981,7 +1056,7 @@
       <key>variable-definition-typed</key>
       <dict>
         <key>name</key>
-        <string>meta.definition.variable.cpp2</string>
+        <string>meta.definition.variable-typed.cpp2</string>
         <key>begin</key>
         <string>(?x)
 ((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
@@ -1022,7 +1097,7 @@
       <key>variable-definition-auto</key>
       <dict>
         <key>name</key>
-        <string>meta.definition.variable.cpp2</string>
+        <string>meta.definition.variable-auto.cpp2</string>
         <key>begin</key>
         <string>(?x)
 ((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
@@ -1340,6 +1415,12 @@
             <key>include</key>
             <string>#square-brackets-operator</string>
           </dict>
+          <dict>
+            <key>name</key>
+            <string>storage.keyword.operator-move.cpp2</string>
+            <key>match</key>
+            <string>\b(move)\b</string>
+          </dict>
         </array>
       </dict>
       <key>if</key>
@@ -1602,6 +1683,10 @@
         <array>
           <dict>
             <key>include</key>
+            <string>#parenthesized-parameters</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#expression</string>
           </dict>
         </array>
@@ -1800,7 +1885,7 @@
         <key>name</key>
         <string>meta.type.inside-angle-brackets.cpp2</string>
         <key>begin</key>
-        <string>(&lt;[^&lt;&gt;=])</string>
+        <string>(&lt;(?![&lt;&gt;=]))</string>
         <key>beginCaptures</key>
         <dict>
           <key>1</key>
@@ -1954,7 +2039,7 @@
           </dict>
         </dict>
         <key>end</key>
-        <string>(?=[\{=])</string>
+        <string>(?=[\{=)])</string>
         <key>patterns</key>
         <array>
           <dict>
@@ -2134,7 +2219,7 @@
         <key>begin</key>
         <string>(?x)
 ((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
-(&lt;[^&lt;&gt;=])
+(&lt;(?![&lt;&gt;=]))
 </string>
         <key>beginCaptures</key>
         <dict>
@@ -2551,6 +2636,46 @@
           <dict>
             <key>name</key>
             <string>punctuation.definition.arguments.end.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#comment</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#punctuation-comma</string>
+          </dict>
+        </array>
+      </dict>
+      <key>tuple</key>
+      <dict>
+        <key>name</key>
+        <string>meta.tuple.cpp2</string>
+        <key>begin</key>
+        <string>\(</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.definition.tuple.begin.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>\)</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.definition.tuple.end.cpp2</string>
           </dict>
         </dict>
         <key>patterns</key>
@@ -3011,6 +3136,22 @@
       <dict>
         <key>patterns</key>
         <array>
+          <dict>
+            <key>name</key>
+            <string>meta.entity.known-primitive-name.cpp2</string>
+            <key>match</key>
+            <string>(?x)
+(int|char|short|long|float|double|bool|void)\b
+</string>
+            <key>captures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.type.primitive.cpp2</string>
+              </dict>
+            </dict>
+          </dict>
           <dict>
             <key>name</key>
             <string>meta.entity.known-std-variable-name.cpp2</string>
