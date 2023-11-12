@@ -110,7 +110,7 @@ repository:
       - include: '#namespace-access'     
 
   variable-name:
-    name: meta.definition.variable.cpp2
+    name: meta.entity.variable.cpp2
     match: '{{namespaced_identifier}}'
     captures:
       "1": 
@@ -347,7 +347,7 @@ repository:
     - include: '#variable-definition-auto'
 
   variable-definition-typed:
-    name: meta.definition.variable.cpp2
+    name: meta.definition.variable-typed.cpp2
     begin: |
       (?x)
       {{namespaced_identifier}}\s*
@@ -363,7 +363,7 @@ repository:
     - include: '#assignment'
 
   variable-definition-auto:
-    name: meta.definition.variable.cpp2
+    name: meta.definition.variable-auto.cpp2
     begin: |
       (?x)
       {{namespaced_identifier}}\s*
