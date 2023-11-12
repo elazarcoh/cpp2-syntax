@@ -521,6 +521,8 @@ repository:
     - include: '#binary-operator'
     - include: '#unary-operator'
     - include: '#square-brackets-operator'
+    - name: storage.keyword.operator-move.cpp2
+      match: \b(move)\b
 
   if:
     name: meta.control.if.cpp2
