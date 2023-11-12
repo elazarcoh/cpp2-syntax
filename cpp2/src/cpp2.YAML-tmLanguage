@@ -47,6 +47,7 @@ repository:
     - include: '#variable-definition-auto'
     - include: '#known-std-symbols'
     - include: '#variable-name'
+    - include: '#tuple'
     - include: '#parenthesized-expression'
   
   type-expression:
@@ -56,8 +57,22 @@ repository:
       match: \b(_)\b
       captures:
         '1': { name: keyword.other.auto.cpp2 }
+    - include: '#type-tuple'
     - include: '#decltype'
     - include: '#type'
+  
+  type-tuple:
+    name: meta.type.tuple.cpp2
+    begin: \(
+    beginCaptures:
+      '0': {name: punctuation.definition.tuple.begin.cpp2}
+    end: \)
+    endCaptures:
+      '0': {name: punctuation.definition.tuple.end.cpp2}
+    patterns:
+    - include: '#comment'
+    - include: '#typed-parameter'
+    - include: '#punctuation-comma'
   
   parenthesized-expression:
     name: meta.parenthesized-expression.cpp2
@@ -970,6 +985,19 @@ repository:
     end: \)
     endCaptures:
       '0': {name: punctuation.definition.arguments.end.cpp2}
+    patterns:
+    - include: '#comment'
+    - include: '#expression'
+    - include: '#punctuation-comma'
+
+  tuple:
+    name: meta.tuple.cpp2
+    begin: \(
+    beginCaptures:
+      '0': {name: punctuation.definition.tuple.begin.cpp2}
+    end: \)
+    endCaptures:
+      '0': {name: punctuation.definition.tuple.end.cpp2}
     patterns:
     - include: '#comment'
     - include: '#expression'
