@@ -1180,6 +1180,12 @@ repository:
 
   known-std-symbols:
     patterns:
+      - name: meta.entity.known-primitive-name.cpp2
+        match: |
+          (?x)
+          (int|char|short|long|float|double|bool|void)\b
+        captures:
+          '1': { name: entity.name.type.primitive.cpp2 }
       - name: meta.entity.known-std-variable-name.cpp2
         match: |
           (?x)
