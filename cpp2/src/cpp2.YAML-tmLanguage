@@ -743,7 +743,7 @@ repository:
     beginCaptures:
       "1": { name: keyword.control.is.cpp2 }
     # `=` in inspect, `{` in if.
-    end: (?=[\{=])
+    end: (?=[\{=)])
     patterns:
     - include: '#expression'
 
