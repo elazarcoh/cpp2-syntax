@@ -11,7 +11,7 @@ variables:
   parameter_modifier: 'in|out|implicit\s+out|inout|copy|move|forward|virtual'
   return_modifier: 'forward'
   member_modifier: 'public|private|protected'
-  template_begin: '<[^<>=]'
+  template_begin: '<(?![<>=])'
 
 patterns:
 - include: '#cpp1-block'
