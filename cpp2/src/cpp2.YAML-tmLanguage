@@ -168,6 +168,7 @@ repository:
       (?x)
       {{namespaced_identifier}}\s*
       ({{colon}})\s*
+      (.*?)\s*
       \b(type)\b\s*
       (==)\s*
     beginCaptures:
@@ -176,8 +177,11 @@ repository:
         - include: '#namespace-access'
       "2": { name: entity.name.type.declaration.cpp2 }
       "3": { name: punctuation.separator.colon.cpp2 }
-      "4": { name: keyword.other.type-alias.cpp2 }
-      "5": { name: keyword.operator.assignment.cpp2 }
+      "4":
+        patterns:
+        - include: '#template'
+      "5": { name: keyword.other.type-alias.cpp2 }
+      "6": { name: keyword.operator.assignment.cpp2 }
     end: (?<=;)
     patterns:
     - include: '#type'
