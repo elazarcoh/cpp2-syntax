@@ -613,6 +613,7 @@ repository:
       "1": { name: keyword.control.do.cpp2 }
     end: (?=[\{])
     patterns:
+    - include: '#parenthesized-parameters'
     - include: '#expression'
 
   labeled-for:
@@ -964,7 +965,6 @@ repository:
         patterns: 
         - include: '#namespace-access'
       "2": { name: entity.name.function.cpp2 }
-
     end: (?<=\))
     patterns:
       - include: '#function-arguments'
