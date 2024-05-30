@@ -20,7 +20,8 @@
             {
                 "id": "cpp2",
                 "extensions": [
-                    ".cpp2"
+                    ".cpp2",
+                    ".h2"
                 ],
                 "configuration": "./language-configuration.json"
             }
