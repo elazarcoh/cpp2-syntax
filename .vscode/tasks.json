@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "build:cpp2-syntax",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build:cpp2-syntax",
+			"detail": "yarn workspace cpp2-syntax run build"
+		}
+	]
+}
