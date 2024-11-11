@@ -9,6 +9,7 @@ variables:
   coloncolon: '::'
   expression_end: '[;{}()\[\]<=>]|$'
   parameter_modifier: 'in|out|implicit\s+out|inout|copy|move|forward|virtual'
+  variable_modifier: 'copy|move|inout'
   return_modifier: 'forward'
   member_modifier: 'public|private|protected'
   template_begin: '<(?![<>=])'
@@ -37,6 +38,7 @@ repository:
     - include: '#as'
     - include: '#is'
     - include: '#unnamed-function'
+    - include: '#numeric-range'
     - include: '#literals'
     - include: '#operators'
     - include: '#new'
@@ -112,6 +114,7 @@ repository:
     - include: '#labeled-for'
     - include: '#do'
     - include: '#labeled-do'
+    - include: '#scoped-code-block-with-local-variables-start'
     - include: '#expression'
 
   namespace-access:
@@ -346,7 +349,7 @@ repository:
       "1": { name: punctuation.anglebracket.close.cpp2 }
     patterns:
     - include: '#template-parameter'
-    - include: '#comma'
+    - include: '#punctuation-comma'
 
   scoped-type-block:
     begin: (\{)
@@ -370,6 +373,51 @@ repository:
     - include: '#function-definition'
     - include: '#variable-definition-typed'
     - include: '#variable-definition-auto'
+
+  variable-inline-definition-typed:
+    name: meta.definition.variable-typed.cpp2
+    begin: |
+      (?x)
+      {{namespaced_identifier}}\s*
+      (?={{colon}})
+    beginCaptures:
+      "1": 
+        patterns: 
+        - include: '#namespace-access'
+      "2": { name: entity.name.variable.declaration.cpp2 }
+    end: (?<=\))
+    patterns:
+    - include: '#typing'
+    - include: '#assignment-for-inline-variable'
+
+  variable-inline-definition-auto:
+    name: meta.definition.variable-auto.cpp2
+    begin: |
+      (?x)
+      {{namespaced_identifier}}\s*
+      (:)(?=[=])
+    beginCaptures:
+      "1": 
+        patterns: 
+        - include: '#namespace-access'
+      "2": { name: entity.name.variable.declaration.cpp2 }
+      "3": { name: punctuation.separator.colon.cpp2 }
+    end: (?<=[,\)])
+    patterns:
+    - include: '#assignment-for-inline-variable'
+
+  assignment-for-inline-variable:
+    name: meta.assignment-for-inline-variable.cpp2
+    begin: |
+      (?x)
+      (=)\s*
+    beginCaptures:
+      "1": { name: keyword.operator.assignment.cpp2 }
+    end: (?<=[,\)])
+    endCaptures:
+      "0": { name: punctuation.terminator.statement.cpp2 }
+    patterns:
+    - include: '#expression'
 
   variable-definition-typed:
     name: meta.definition.variable-typed.cpp2
@@ -473,6 +521,28 @@ repository:
     patterns:
     - include: '#code-block-content'
 
+  variable-modifier:
+    name: storage.modifier.cpp2
+    match: \b({{variable_modifier}})\b
+
+  scoped-code-block-with-local-variables-start:
+    begin: (\()
+    beginCaptures:
+      "1": { name: punctuation.parenthesis.open.cpp2 }
+    end: (\))
+    endCaptures:
+      "1": { name: punctuation.parenthesis.close.cpp2 }
+    patterns:
+    - include: '#scoped-code-block-with-local-variables-start-content'
+    name: meta.definition.scoped-code-block-with-local-variables-start.cpp2
+
+  scoped-code-block-with-local-variables-start-content:
+    patterns:
+    # - include: '#variable-modifier'
+    # - include: '#variable-inline-definition-typed'
+    - include: '#variable-inline-definition-auto'
+    - include: '#punctuation-comma'
+ 
   code-block-content:
     patterns:
     - include: '#cpp1-block'
@@ -492,7 +562,8 @@ repository:
         <<= | >>= | &= | \|= | \^= |
         && | \|\| |
         &&= | \|\|= |
-        == | != | < | > | <= | >= | <=> 
+        == | != | < | > | <= | >= | <=> |
+        ..= | ..<
       )
 
   unary-operator:
@@ -833,7 +904,7 @@ repository:
       patterns:
       - include: '#type-expression'
       - include: '#expression'
-    - include: '#comma'
+    - include: '#punctuation-comma'
 
   function-return-type-separator:
     name: punctuation.separator.function-return-type.cpp2
@@ -1019,6 +1090,20 @@ repository:
   boolean:
     name: constant.language.boolean.cpp2
     match: \b(true|false)\b
+  
+  numeric-range:
+    comment: This is a special case for range operator `..` that starts with a number. We need it to be a separate rule to avoid conflicts with regular numeric literals.
+    match: "(?<!\\w)\\d+\\.\\.(=|<)"
+    captures:
+      '0':
+        patterns:
+        - begin: "(?=.)"
+          end: "$"
+          patterns:
+          - match: "(?<!\\w)\\d+"
+            name: constant.numeric.decimal.cpp2
+          - match: \.\.(=|<)
+            name: keyword.operator.range.cpp2
 
   numeric:
     comment: TODO taken from C# as is. Need to modify.

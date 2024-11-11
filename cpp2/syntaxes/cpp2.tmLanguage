@@ -82,6 +82,10 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#numeric-range</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#literals</string>
           </dict>
           <dict>
@@ -325,6 +329,10 @@
           <dict>
             <key>include</key>
             <string>#labeled-do</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#scoped-code-block-with-local-variables-start</string>
           </dict>
           <dict>
             <key>include</key>
@@ -982,7 +990,7 @@
           </dict>
           <dict>
             <key>include</key>
-            <string>#comma</string>
+            <string>#punctuation-comma</string>
           </dict>
         </array>
       </dict>
@@ -1050,6 +1058,123 @@
           <dict>
             <key>include</key>
             <string>#variable-definition-auto</string>
+          </dict>
+        </array>
+      </dict>
+      <key>variable-inline-definition-typed</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.variable-typed.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
+(?=:(?:[\s]+|$))
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#namespace-access</string>
+              </dict>
+            </array>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.variable.declaration.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=\))</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#typing</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#assignment-for-inline-variable</string>
+          </dict>
+        </array>
+      </dict>
+      <key>variable-inline-definition-auto</key>
+      <dict>
+        <key>name</key>
+        <string>meta.definition.variable-auto.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*)\s*
+(:)(?=[=])
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#namespace-access</string>
+              </dict>
+            </array>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>entity.name.variable.declaration.cpp2</string>
+          </dict>
+          <key>3</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.separator.colon.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=[,\)])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#assignment-for-inline-variable</string>
+          </dict>
+        </array>
+      </dict>
+      <key>assignment-for-inline-variable</key>
+      <dict>
+        <key>name</key>
+        <string>meta.assignment-for-inline-variable.cpp2</string>
+        <key>begin</key>
+        <string>(?x)
+(=)\s*
+</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.operator.assignment.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=[,\)])</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.terminator.statement.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#expression</string>
           </dict>
         </array>
       </dict>
@@ -1314,6 +1439,59 @@
           </dict>
         </array>
       </dict>
+      <key>variable-modifier</key>
+      <dict>
+        <key>name</key>
+        <string>storage.modifier.cpp2</string>
+        <key>match</key>
+        <string>\b(copy|move|inout)\b</string>
+      </dict>
+      <key>scoped-code-block-with-local-variables-start</key>
+      <dict>
+        <key>begin</key>
+        <string>(\()</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.parenthesis.open.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(\))</string>
+        <key>endCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>punctuation.parenthesis.close.cpp2</string>
+          </dict>
+        </dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#scoped-code-block-with-local-variables-start-content</string>
+          </dict>
+        </array>
+        <key>name</key>
+        <string>meta.definition.scoped-code-block-with-local-variables-start.cpp2</string>
+      </dict>
+      <key>scoped-code-block-with-local-variables-start-content</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#variable-inline-definition-auto</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#punctuation-comma</string>
+          </dict>
+        </array>
+      </dict>
       <key>code-block-content</key>
       <dict>
         <key>patterns</key>
@@ -1350,7 +1528,8 @@
   &lt;&lt;= | &gt;&gt;= | &amp;= | \|= | \^= |
   &amp;&amp; | \|\| |
   &amp;&amp;= | \|\|= |
-  == | != | &lt; | &gt; | &lt;= | &gt;= | &lt;=&gt; 
+  == | != | &lt; | &gt; | &lt;= | &gt;= | &lt;=&gt; |
+  ..= | ..&lt;
 )
 </string>
       </dict>
@@ -2274,7 +2453,7 @@
           </dict>
           <dict>
             <key>include</key>
-            <string>#comma</string>
+            <string>#punctuation-comma</string>
           </dict>
         </array>
       </dict>
@@ -2701,6 +2880,43 @@
         <string>constant.language.boolean.cpp2</string>
         <key>match</key>
         <string>\b(true|false)\b</string>
+      </dict>
+      <key>numeric-range</key>
+      <dict>
+        <key>comment</key>
+        <string>This is a special case for range operator `..` that starts with a number. We need it to be a separate rule to avoid conflicts with regular numeric literals.</string>
+        <key>match</key>
+        <string>(?&lt;!\w)\d+\.\.(=|&lt;)</string>
+        <key>captures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>begin</key>
+                <string>(?=.)</string>
+                <key>end</key>
+                <string>$</string>
+                <key>patterns</key>
+                <array>
+                  <dict>
+                    <key>match</key>
+                    <string>(?&lt;!\w)\d+</string>
+                    <key>name</key>
+                    <string>constant.numeric.decimal.cpp2</string>
+                  </dict>
+                  <dict>
+                    <key>match</key>
+                    <string>\.\.(=|&lt;)</string>
+                    <key>name</key>
+                    <string>keyword.operator.range.cpp2</string>
+                  </dict>
+                </array>
+              </dict>
+            </array>
+          </dict>
+        </dict>
       </dict>
       <key>numeric</key>
       <dict>
