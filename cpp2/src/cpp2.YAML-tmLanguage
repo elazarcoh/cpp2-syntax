@@ -550,24 +550,53 @@ repository:
     - include: '#statement'
     - include: '#scoped-code-block'
 
-  binary-operator:
-    name: keyword.operator.cpp2
+  comparison-operator:
+    name: keyword.operator.comparison.cpp2
     match: |
       (?x)
-      (
-        = | := |
-        \+ | - | \* | / | % | 
-        \+= | -= | \*= | /= | %= |
-        << | >> | & | \| | \^ | 
-        <<= | >>= | &= | \|= | \^= |
-        && | \|\| |
-        &&= | \|\|= |
-        == | != | < | > | <= | >= | <=> |
-        ..= | ..<
-      )
+      ( == | != | < | > | <= | >= | <=> )
+    
+  logical-operator:
+    name: keyword.operator.logical.cpp2
+    match: |
+      (?x)
+      ( && | \|\| )
+
+  bitwise-operator:
+    name: keyword.operator.bitwise.cpp2
+    match: |
+      (?x)
+      ( << | >> | & | \| | \^ )
+
+  assignment-operator:
+    name: keyword.operator.assignment.cpp2
+    match: |
+      (?x)
+      ( \+= | -= | \*= | /= | %= | <<= | >>= | &= | \|= | \^= | &&= | \|\|= )
+
+  arithmetic-operator:
+    name: keyword.operator.arithmetic.cpp2
+    match: |
+      (?x)
+      ( \+ | - | \* | / | % )
+
+  range-operator:
+    name: keyword.operator.range.cpp2
+    match: |
+      (?x)
+      ( \.\.= | \.\.< )
+
+  binary-operator:
+    patterns:
+    - include: '#comparison-operator'
+    - include: '#logical-operator'
+    - include: '#bitwise-operator'
+    - include: '#assignment-operator'
+    - include: '#arithmetic-operator'
+    - include: '#range-operator'
 
   unary-operator:
-    name: keyword.operator.cpp2
+    name: keyword.operator.unary.cpp2
     match: |
       (?x)
       (?<={{namespaced_identifier}})

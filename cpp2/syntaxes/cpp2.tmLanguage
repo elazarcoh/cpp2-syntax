@@ -1514,29 +1514,94 @@
           </dict>
         </array>
       </dict>
-      <key>binary-operator</key>
+      <key>comparison-operator</key>
       <dict>
         <key>name</key>
-        <string>keyword.operator.cpp2</string>
+        <string>keyword.operator.comparison.cpp2</string>
         <key>match</key>
         <string>(?x)
-(
-  = | := |
-  \+ | - | \* | / | % | 
-  \+= | -= | \*= | /= | %= |
-  &lt;&lt; | &gt;&gt; | &amp; | \| | \^ | 
-  &lt;&lt;= | &gt;&gt;= | &amp;= | \|= | \^= |
-  &amp;&amp; | \|\| |
-  &amp;&amp;= | \|\|= |
-  == | != | &lt; | &gt; | &lt;= | &gt;= | &lt;=&gt; |
-  ..= | ..&lt;
-)
+( == | != | &lt; | &gt; | &lt;= | &gt;= | &lt;=&gt; )
 </string>
+      </dict>
+      <key>logical-operator</key>
+      <dict>
+        <key>name</key>
+        <string>keyword.operator.logical.cpp2</string>
+        <key>match</key>
+        <string>(?x)
+( &amp;&amp; | \|\| )
+</string>
+      </dict>
+      <key>bitwise-operator</key>
+      <dict>
+        <key>name</key>
+        <string>keyword.operator.bitwise.cpp2</string>
+        <key>match</key>
+        <string>(?x)
+( &lt;&lt; | &gt;&gt; | &amp; | \| | \^ )
+</string>
+      </dict>
+      <key>assignment-operator</key>
+      <dict>
+        <key>name</key>
+        <string>keyword.operator.assignment.cpp2</string>
+        <key>match</key>
+        <string>(?x)
+( \+= | -= | \*= | /= | %= | &lt;&lt;= | &gt;&gt;= | &amp;= | \|= | \^= | &amp;&amp;= | \|\|= )
+</string>
+      </dict>
+      <key>arithmetic-operator</key>
+      <dict>
+        <key>name</key>
+        <string>keyword.operator.arithmetic.cpp2</string>
+        <key>match</key>
+        <string>(?x)
+( \+ | - | \* | / | % )
+</string>
+      </dict>
+      <key>range-operator</key>
+      <dict>
+        <key>name</key>
+        <string>keyword.operator.range.cpp2</string>
+        <key>match</key>
+        <string>(?x)
+( \.\.= | \.\.&lt; )
+</string>
+      </dict>
+      <key>binary-operator</key>
+      <dict>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#comparison-operator</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#logical-operator</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#bitwise-operator</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#assignment-operator</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#arithmetic-operator</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#range-operator</string>
+          </dict>
+        </array>
       </dict>
       <key>unary-operator</key>
       <dict>
         <key>name</key>
-        <string>keyword.operator.cpp2</string>
+        <string>keyword.operator.unary.cpp2</string>
         <key>match</key>
         <string>(?x)
 (?&lt;=((?:[_[:alpha:]][_[:alnum:]]*::)*)([_[:alpha:]][_[:alnum:]]*))
