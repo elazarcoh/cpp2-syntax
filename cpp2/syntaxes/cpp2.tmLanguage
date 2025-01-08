@@ -66,6 +66,10 @@
         <array>
           <dict>
             <key>include</key>
+            <string>#comment</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#inspect</string>
           </dict>
           <dict>
