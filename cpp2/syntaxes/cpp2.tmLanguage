@@ -1306,7 +1306,7 @@
         <key>begin</key>
         <string>(?x)
 ([_[:alpha:]][_[:alnum:]]*)
-(?=\s*[:]\s*[\(])
+(?=\s*[:]\s*[\(|&lt;])
 </string>
         <key>beginCaptures</key>
         <dict>

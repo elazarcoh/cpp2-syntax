@@ -470,7 +470,7 @@ repository:
     begin: |
       (?x)
       ({{identifier}})
-      (?=\s*[:]\s*[\(])
+      (?=\s*[:]\s*[\(|<])
     beginCaptures:
       "1": { name: entity.name.function.declaration.cpp2 }
     end: (?<=[\};])
