@@ -862,7 +862,7 @@ repository:
 
   function-typing:
     name: meta.typing.cpp2
-    begin: (:)(?=[\s\(])
+    begin: (:)(?=[\s*[\(<]])
     beginCaptures:
       "1": { name: punctuation.separator.colon.cpp2 }
     end: (?=\s*(?=[=;]))
@@ -944,9 +944,10 @@ repository:
     name: meta.function-type.cpp2
     begin: |
       (?x)
-      (?=\()
+      (?=[\(<])
     end: (?=[=;])
     patterns:
+    - include: '#template'
     - include: '#parenthesized-parameters'
     - include: '#function-trailing-return'
   
