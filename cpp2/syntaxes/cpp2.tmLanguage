@@ -1306,7 +1306,7 @@
         <key>begin</key>
         <string>(?x)
 ([_[:alpha:]][_[:alnum:]]*)
-(?=\s*[:]\s*[\(])
+(?=\s*[:]\s*[\(|&lt;])
 </string>
         <key>beginCaptures</key>
         <dict>
@@ -2326,7 +2326,7 @@
         <key>name</key>
         <string>meta.typing.cpp2</string>
         <key>begin</key>
-        <string>(:)(?=[\s\(])</string>
+        <string>(:)(?=[\s*[\(&lt;]])</string>
         <key>beginCaptures</key>
         <dict>
           <key>1</key>
@@ -2539,12 +2539,16 @@
         <string>meta.function-type.cpp2</string>
         <key>begin</key>
         <string>(?x)
-(?=\()
+(?=[\(&lt;])
 </string>
         <key>end</key>
         <string>(?=[=;])</string>
         <key>patterns</key>
         <array>
+          <dict>
+            <key>include</key>
+            <string>#template</string>
+          </dict>
           <dict>
             <key>include</key>
             <string>#parenthesized-parameters</string>
