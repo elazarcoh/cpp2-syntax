@@ -78,6 +78,10 @@
           </dict>
           <dict>
             <key>include</key>
+            <string>#cast</string>
+          </dict>
+          <dict>
+            <key>include</key>
             <string>#is</string>
           </dict>
           <dict>
@@ -2321,6 +2325,30 @@
           </dict>
         </array>
       </dict>
+      <key>cast</key>
+      <dict>
+        <key>name</key>
+        <string>meta.operator.cast.cpp2</string>
+        <key>begin</key>
+        <string>\b(unchecked_narrow|unchecked_cast)\b\s*</string>
+        <key>beginCaptures</key>
+        <dict>
+          <key>1</key>
+          <dict>
+            <key>name</key>
+            <string>storage.type.cast.cpp2</string>
+          </dict>
+        </dict>
+        <key>end</key>
+        <string>(?&lt;=[&gt;])</string>
+        <key>patterns</key>
+        <array>
+          <dict>
+            <key>include</key>
+            <string>#type-inside-angle-brackets</string>
+          </dict>
+        </array>
+      </dict>
       <key>function-typing</key>
       <dict>
         <key>name</key>
@@ -3479,14 +3507,7 @@
             <string>(?x)
 (std)\s*
 (::)\s*
-(string|vector|map|set|list|queue|stack|priority_queue
-|pair|tuple
-|function
-|thread
-|mutex|lock_guard|unique_lock
-|condition_variable
-|atomic
-)\b
+(string|thread|mutex|condition_variable)\b
 </string>
             <key>captures</key>
             <dict>
@@ -3506,6 +3527,49 @@
                 <string>entity.name.type.cpp2</string>
               </dict>
             </dict>
+          </dict>
+          <dict>
+            <key>name</key>
+            <string>meta.entity.known-std-type-name.template.cpp2</string>
+            <key>begin</key>
+            <string>(?x)
+(std)\s*
+(::)\s*
+(vector|map|set|list|queue|stack|priority_queue
+|pair|tuple
+|function
+|lock_guard|unique_lock
+|atomic
+|dynamic_pointer_cast
+)\b
+</string>
+            <key>beginCaptures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.namespace.cpp2</string>
+              </dict>
+              <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>punctuation.static-accessor.cpp2</string>
+              </dict>
+              <key>3</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.type.cpp2</string>
+              </dict>
+            </dict>
+            <key>end</key>
+            <string>(?&lt;=[&gt;])</string>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#type-inside-angle-brackets</string>
+              </dict>
+            </array>
           </dict>
         </array>
       </dict>
