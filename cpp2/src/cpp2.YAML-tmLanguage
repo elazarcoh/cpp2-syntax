@@ -865,7 +865,7 @@ repository:
     name: meta.operator.cast.cpp2
     begin: \b(unchecked_narrow|unchecked_cast)\b\s*
     beginCaptures:
-      "1": { name: "keyword.operator.cast.cpp2" }
+      "1": { name: keyword.operator.cast.cpp2 }
     end: (?<=[>])
     patterns:
     - include: '#type-inside-angle-brackets'
