@@ -2336,7 +2336,7 @@
           <key>1</key>
           <dict>
             <key>name</key>
-            <string>storage.type.cast.cpp2</string>
+            <string>keyword.operator.cast.cpp2</string>
           </dict>
         </dict>
         <key>end</key>
@@ -3502,6 +3502,76 @@
           </dict>
           <dict>
             <key>name</key>
+            <string>meta.entity.known-std-function-name.cpp2</string>
+            <key>match</key>
+            <string>(?x)
+(std)\s*
+(::)\s*
+(make_shared|make_unique|make_pair|make_tuple|make_optional|make_any
+)\b
+(?=[(])
+</string>
+            <key>captures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.namespace.cpp2</string>
+              </dict>
+              <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>punctuation.static-accessor.cpp2</string>
+              </dict>
+              <key>3</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.function.cpp2</string>
+              </dict>
+            </dict>
+          </dict>
+          <dict>
+            <key>name</key>
+            <string>meta.entity.known-std-function-name.template.cpp2</string>
+            <key>begin</key>
+            <string>(?x)
+(std)\s*
+(::)\s*
+(make_shared|make_unique|make_pair|make_tuple|make_optional|make_any
+|dynamic_pointer_cast
+)\b
+(?=&lt;)
+</string>
+            <key>beginCaptures</key>
+            <dict>
+              <key>1</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.namespace.cpp2</string>
+              </dict>
+              <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>punctuation.static-accessor.cpp2</string>
+              </dict>
+              <key>3</key>
+              <dict>
+                <key>name</key>
+                <string>entity.name.function.cpp2</string>
+              </dict>
+            </dict>
+            <key>end</key>
+            <string>(?&lt;=[&gt;])</string>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#type-inside-angle-brackets</string>
+              </dict>
+            </array>
+          </dict>
+          <dict>
+            <key>name</key>
             <string>meta.entity.known-std-type-name.cpp2</string>
             <key>match</key>
             <string>(?x)
@@ -3540,7 +3610,6 @@
 |function
 |lock_guard|unique_lock
 |atomic
-|dynamic_pointer_cast
 )\b
 </string>
             <key>beginCaptures</key>

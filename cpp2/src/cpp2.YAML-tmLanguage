@@ -862,10 +862,10 @@ repository:
     - include: '#type'
 
   cast:
-    name: storage.type.cast.cpp2
+    name: meta.operator.cast.cpp2
     begin: \b(unchecked_narrow|unchecked_cast)\b\s*
     beginCaptures:
-      "1": { name: storage.type.cast.cpp2 }
+      "1": { name: "keyword.operator.cast.cpp2" }
     end: (?<=[>])
     patterns:
     - include: '#type-inside-angle-brackets'
@@ -1327,6 +1327,34 @@ repository:
           '1': { name: entity.name.namespace.cpp2 }
           '2': { name: punctuation.static-accessor.cpp2 }
           '3': { name: entity.name.variable.cpp2 }
+      - name: meta.entity.known-std-function-name.cpp2
+        match: |
+          (?x)
+          (std)\s*
+          (::)\s*
+          (make_shared|make_unique|make_pair|make_tuple|make_optional|make_any
+          )\b
+          (?=[(])
+        captures:
+          '1': { name: entity.name.namespace.cpp2 }
+          '2': { name: punctuation.static-accessor.cpp2 }
+          '3': { name: entity.name.function.cpp2 }
+      - name: meta.entity.known-std-function-name.template.cpp2
+        begin: |
+          (?x)
+          (std)\s*
+          (::)\s*
+          (make_shared|make_unique|make_pair|make_tuple|make_optional|make_any
+          |dynamic_pointer_cast
+          )\b
+          (?=<)
+        beginCaptures:
+          '1': { name: entity.name.namespace.cpp2 }
+          '2': { name: punctuation.static-accessor.cpp2 }
+          '3': { name: entity.name.function.cpp2 }
+        end: (?<=[>])
+        patterns:
+        - include: '#type-inside-angle-brackets'
       - name: meta.entity.known-std-type-name.cpp2
         match: |
           (?x)
@@ -1347,7 +1375,6 @@ repository:
           |function
           |lock_guard|unique_lock
           |atomic
-          |dynamic_pointer_cast
           )\b
         beginCaptures:
           '1': { name: entity.name.namespace.cpp2 }
