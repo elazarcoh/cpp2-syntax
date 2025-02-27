@@ -528,10 +528,9 @@ repository:
     match: \b({{variable_modifier}})\b
 
   scoped-code-block-with-local-variables-start:
-    begin: (\()(copy)?
+    begin: (\()
     beginCaptures:
       "1": { name: punctuation.parenthesis.open.cpp2 }
-      "2": { name: storage.modifier.cpp2 }
     end: (?<=\))
     endCaptures:
       "1": { name: punctuation.parenthesis.close.cpp2 }
@@ -541,7 +540,7 @@ repository:
 
   scoped-code-block-with-local-variables-start-content:
     patterns:
-    # - include: '#variable-modifier'
+    - include: '#variable-modifier'
     - include: '#variable-inline-definition-typed'
     - include: '#variable-inline-definition-auto'
     - include: '#punctuation-comma'
