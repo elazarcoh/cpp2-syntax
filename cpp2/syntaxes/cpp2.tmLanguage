@@ -1343,7 +1343,7 @@
         <key>name</key>
         <string>meta.definition.unnamed-function.cpp2</string>
         <key>begin</key>
-        <string>(:)(?=[\s\(])</string>
+        <string>(:)(?=[\s*[\(&lt;]])</string>
         <key>beginCaptures</key>
         <dict>
           <key>1</key>
