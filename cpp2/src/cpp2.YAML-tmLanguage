@@ -387,7 +387,7 @@ repository:
         patterns: 
         - include: '#namespace-access'
       "2": { name: entity.name.variable.declaration.cpp2 }
-    end: (?<=\))
+    end: (?=\))
     patterns:
     - include: '#typing'
     - include: '#assignment-for-inline-variable'
@@ -415,9 +415,7 @@ repository:
       (=)\s*
     beginCaptures:
       "1": { name: keyword.operator.assignment.cpp2 }
-    end: (?<=[,\)])
-    endCaptures:
-      "0": { name: punctuation.terminator.statement.cpp2 }
+    end: (?=[,)])
     patterns:
     - include: '#expression'
 
@@ -531,7 +529,7 @@ repository:
     begin: (\()
     beginCaptures:
       "1": { name: punctuation.parenthesis.open.cpp2 }
-    end: (?<=\))
+    end: (\))
     endCaptures:
       "1": { name: punctuation.parenthesis.close.cpp2 }
     patterns:
@@ -542,8 +540,8 @@ repository:
     patterns:
     - include: '#variable-modifier'
     - include: '#variable-inline-definition-typed'
-    - include: '#variable-inline-definition-auto'
-    - include: '#punctuation-comma'
+    # - include: '#variable-inline-definition-auto'
+    # - include: '#punctuation-comma'
  
   code-block-content:
     patterns:
