@@ -1467,7 +1467,7 @@
           </dict>
         </dict>
         <key>end</key>
-        <string>(\))</string>
+        <string>(?&lt;=\))</string>
         <key>endCaptures</key>
         <dict>
           <key>1</key>
@@ -1490,6 +1490,14 @@
       <dict>
         <key>patterns</key>
         <array>
+          <dict>
+            <key>include</key>
+            <string>#variable-modifier</string>
+          </dict>
+          <dict>
+            <key>include</key>
+            <string>#variable-inline-definition-typed</string>
+          </dict>
           <dict>
             <key>include</key>
             <string>#variable-inline-definition-auto</string>
