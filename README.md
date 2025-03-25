@@ -18,7 +18,7 @@ For any issues, please file them on the [GitHub repo](https://github.com/elazarc
 
 ![Alt text](resources/syntax-highligh-example.png)
 
-## Build
+## Build the extension
 
 ```bash
 yarn install
@@ -27,3 +27,12 @@ yarn run package
 ```
 
 The output VSIX file is located under `cpp2`.
+
+## Compile and run the test file
+
+```bash
+cppfront ./cpp2/test.cpp2 -import-std
+clang++ -I../cppfront/source/ test.cpp -std=c++20 -o test.exe
+./test.exe 
+```
+
