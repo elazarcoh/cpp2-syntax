@@ -1203,6 +1203,13 @@
           <dict>
             <key>name</key>
             <string>entity.name.variable.declaration.cpp2</string>
+            <key>patterns</key>
+            <array>
+              <dict>
+                <key>include</key>
+                <string>#this</string>
+              </dict>
+            </array>
           </dict>
         </dict>
         <key>end</key>
@@ -2624,13 +2631,26 @@
           </dict>
         </dict>
       </dict>
+      <key>this</key>
+      <dict>
+        <key>match</key>
+        <string>\bthis\b</string>
+        <key>captures</key>
+        <dict>
+          <key>0</key>
+          <dict>
+            <key>name</key>
+            <string>keyword.this.cpp2</string>
+          </dict>
+        </dict>
+      </dict>
       <key>untyped-parameter</key>
       <dict>
         <key>name</key>
         <string>meta.untyped-parameter.cpp2</string>
         <key>begin</key>
         <string>(?x)
-(?:\b(in|out|implicit\s+out|inout|copy|move|forward|virtual)\b\s+)?
+(?:\b(in|out|inout|copy|move|forward|implicit\s+out|(?:virtual|override|final)\s+(?:in|inout))\b\s+)?
 ([_[:alpha:]][_[:alnum:]]*)\s*
 </string>
         <key>beginCaptures</key>
@@ -2644,6 +2664,10 @@
           <dict>
             <key>patterns</key>
             <array>
+              <dict>
+                <key>include</key>
+                <string>#this</string>
+              </dict>
               <dict>
                 <key>include</key>
                 <string>#parameter-name</string>
@@ -2660,7 +2684,7 @@
         <string>meta.typed-parameter.cpp2</string>
         <key>begin</key>
         <string>(?x)
-(?:\b(in|out|implicit\s+out|inout|copy|move|forward|virtual)\b\s+)?
+(?:\b(in|out|inout|copy|move|forward|implicit\s+out|(?:virtual|override|final)\s+(?:in|inout))\b\s+)?
 ([_[:alpha:]][_[:alnum:]]*)\s*
 (:)\s*
 </string>
