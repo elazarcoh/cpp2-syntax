@@ -8,7 +8,7 @@ variables:
   colon: ':(?:[\s]+|$)'
   coloncolon: '::'
   expression_end: '[;{}()\[\]<=>]|$'
-  parameter_modifier: 'in|out|implicit\s+out|inout|copy|move|forward|virtual'
+  parameter_modifier: 'in|out|inout|copy|move|forward|implicit\s+out|(?:virtual|override|final)\s+(?:in|inout)'
   variable_modifier: 'copy|move|inout'
   return_modifier: 'forward'
   member_modifier: 'public|private|protected'
@@ -177,8 +177,8 @@ repository:
       \b(type)\b\s*
       (==)\s*
     beginCaptures:
-      "1": 
-        patterns: 
+      "1":
+        patterns:
         - include: '#namespace-access'
       "2": { name: entity.name.type.declaration.cpp2 }
       "3": { name: punctuation.separator.colon.cpp2 }
@@ -427,9 +427,12 @@ repository:
       (?={{colon}})
     beginCaptures:
       "1": 
-        patterns: 
+        patterns:
         - include: '#namespace-access'
-      "2": { name: entity.name.variable.declaration.cpp2 }
+      "2":
+        name: entity.name.variable.declaration.cpp2
+        patterns:
+        - include: '#this'
     end: (?<=;)
     patterns:
     - include: '#typing'
@@ -980,6 +983,11 @@ repository:
     captures:
       '1': { name: entity.name.variable.parameter.cpp2 }
 
+  this:
+    match: \bthis\b
+    captures:
+      "0": { name: keyword.this.cpp2 }
+
   untyped-parameter:
     name: meta.untyped-parameter.cpp2
     begin: |
@@ -990,6 +998,7 @@ repository:
       "1":  { name: storage.modifier.cpp2 }
       "2":
         patterns:
+        - include: '#this'
         - include: '#parameter-name'
     end: (?=[\)\,])
 

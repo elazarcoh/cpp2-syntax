@@ -1,0 +1,30 @@
+Object: type = {
+    public value: i8;
+
+    public operator=:(implicit out this, v: i8) = {
+        value = v;
+    }
+
+    public id:(virtual inout this) -> i8 = { return 0; }
+    public number_of_legs:(virtual in this) -> i8 = { return 0; }
+}
+
+Chair: type = {
+    this: Object;
+
+    public operator=:(implicit out this, v: i8) = {
+        Object = (v);
+    }
+
+    public id:(override inout this) -> i8 = { return 1; }
+    public number_of_legs:(final in this) -> i8 = { return 4; }
+}
+
+main: () = {
+    (copy i := 0)
+    while i < 10
+    next  i++ {
+        std::cout << i << " ";
+    }
+    std::cout << '\n';
+}
