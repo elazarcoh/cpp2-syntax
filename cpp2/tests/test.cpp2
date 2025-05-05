@@ -17,7 +17,7 @@ Chair: type = {
     }
 
     public id:(override inout this) -> i8 = { return 1; }
-    public number_of_legs:(final in this) -> i8 = { return 4; }
+    public number_of_legs:(final in this) -> i8 = { return std::max(1 as i8, 4 as i8); }
 }
 
 main: () = {
