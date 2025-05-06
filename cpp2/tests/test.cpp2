@@ -20,9 +20,19 @@ Chair: type = {
     public number_of_legs:(final in this) -> i8 = { return std::max(1 as i8, 4 as i8); }
 }
 
+add:(a: i32, b: i32, add_5: bool = false) -> i32 = {
+    add: bool = false;
+    result:= a + b;
+    if add_5 {
+        result += 5;
+    }
+    return result;
+}
+
 main: () = {
+    count:= add(2, 3, true);
     (copy i := 0)
-    while i < 10
+    while i < count
     next  i++ {
         std::cout << i << " ";
     }

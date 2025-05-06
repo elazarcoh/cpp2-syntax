@@ -1003,6 +1003,17 @@ repository:
         - include: '#parameter-name'
     end: (?=[\)\,])
 
+  default-value:
+    name: meta.default-value.cpp2
+    begin: |
+      (?x)
+      (=)\s*
+    beginCaptures:
+      "1": { name: keyword.operator.assignment.cpp2 }
+    end: (?=[,\)])
+    patterns:
+      - include: '#expression'
+
   typed-parameter:
     name: meta.typed-parameter.cpp2
     begin: |
@@ -1011,15 +1022,13 @@ repository:
       ({{identifier}})\s*
       (:)\s*
     beginCaptures:
-      "1":  { name: storage.modifier.cpp2 }
-      "2":
-        patterns:
-        - include: '#parameter-name'
-      "3": 
-        name: punctuation.separator.colon.cpp2
+      "1": { name: storage.modifier.cpp2 }
+      "2": { name: entity.name.type.declaration.cpp2 }
+      "3": { name: punctuation.separator.colon.cpp2 }
     end: (?=[\)\,])
-    patterns: 
+    patterns:
     - include: '#type-name'
+    - include: '#default-value'
 
   parameter:
     patterns:
