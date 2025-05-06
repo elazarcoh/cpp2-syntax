@@ -849,16 +849,17 @@ repository:
     beginCaptures:
       "1": { name: keyword.control.is.cpp2 }
     # `=` in inspect, `{` in if.
-    end: (?=[\{=)])
+    end: (?=[\{=)\,])
     patterns:
     - include: '#expression'
+    - include: '#parenthesized-parameters'
 
   as:
     name: meta.operator.as.cpp2
     begin: \b(as)\b\s*
     beginCaptures:
       "1": { name: keyword.control.operator.as.cpp2 }
-    end: (?={{expression_end}})
+    end: (?=[\{=)\,])
     patterns:
     - include: '#type'
 
