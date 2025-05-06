@@ -73,7 +73,7 @@
                             "fontStyle": "bold"
                         }
                     },
-                      {
+                    {
                         "scope": "entity.name.type.declaration.cpp2",
                         "settings": {
                             "fontStyle": "bold"
@@ -96,5 +96,8 @@
         "vscode:prepublish": "yarn run prepack",
         "publish": "npx @vscode/vsce publish --yarn"
     },
-    "dependencies": {}
+    "devDependencies": {
+        "@vscode/vsce": "^3.3.2",
+        "shx": "^0.4.0"
+    }
 }
