@@ -7,7 +7,7 @@
     },
     "displayName": "cpp2 (cppfront) Syntax Highlighting",
     "description": "Syntax highlighting for cpp2 (cppfront) language",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "preview": true,
     "engines": {
         "vscode": "^1.63.0"
