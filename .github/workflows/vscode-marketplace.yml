@@ -13,8 +13,8 @@ jobs:
               with:
                   node-version: 20
             - name: Pre-install yarn for local runners
-              run: npm install -g yarn
-            - run: yarn install --frozen-lockfile
+              run: corepack enable
+            - run: yarn install --immutable
             - run: yarn build
             #   - name: Publish to Open VSX Registry
             #     uses: HaaLeo/publish-vscode-extension@v2
