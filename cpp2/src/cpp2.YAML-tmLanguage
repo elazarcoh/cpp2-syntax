@@ -859,7 +859,7 @@ repository:
     begin: \b(as)\b\s*
     beginCaptures:
       "1": { name: keyword.control.operator.as.cpp2 }
-    end: (?=[\{=)\,])
+    end: (?=\s*(?:[\{=)\,+*/\-]|$))
     patterns:
     - include: '#type'
 

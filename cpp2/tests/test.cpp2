@@ -29,6 +29,11 @@ add:(a: i32, b: i32, add_5: bool = false) -> i32 = {
     return result;
 }
 
+print:(a: i8) -> std::string = {
+    text:= a as std::string + "x" + a as std::string;
+    return text;
+}
+
 main: () = {
     count:= add(2, 3, true);
     (copy i := 0)
