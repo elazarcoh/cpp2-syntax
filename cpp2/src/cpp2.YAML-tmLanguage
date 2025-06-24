@@ -1023,7 +1023,7 @@ repository:
       (:)\s*
     beginCaptures:
       "1": { name: storage.modifier.cpp2 }
-      "2": { name: entity.name.type.declaration.cpp2 }
+      "2": { name: entity.name.variable.declaration.cpp2 }
       "3": { name: punctuation.separator.colon.cpp2 }
     end: (?=[\)\,])
     patterns:
